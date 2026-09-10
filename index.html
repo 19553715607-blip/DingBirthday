@@ -1,0 +1,1945 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>丁睿 · 星际生日祝福 | STELLAR BIRTHDAY 10.25</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Noto+Sans+SC:wght@300;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ============ 全局基础：深邃宇宙蓝底色 ============ */
+        :root {
+            --space-0: #02060f;
+            --space-1: #050d24;
+            --cyan: #6fe3ff;
+            --cyan-soft: #9fd8ff;
+            --silver: #dce9ff;
+            --violet: #8f7bff;
+            --line: rgba(120, 200, 255, .28);
+            --glow: 0 0 12px rgba(111, 227, 255, .55), 0 0 42px rgba(111, 227, 255, .22);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--space-0);
+        }
+
+        body {
+            font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif;
+            color: var(--silver);
+            -webkit-font-smoothing: antialiased;
+            user-select: none;
+        }
+
+        #scene {
+            position: fixed;
+            inset: 0;
+            display: block;
+            touch-action: none;
+            cursor: grab;
+        }
+
+        #scene:active {
+            cursor: grabbing;
+        }
+
+        /* ============ 覆盖层通用 ============ */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* 扫描线 + 暗角，营造全息屏幕质感 */
+        .scanlines {
+            background: repeating-linear-gradient(0deg, rgba(160, 220, 255, .05) 0 1px, transparent 1px 3px);
+            mix-blend-mode: screen;
+            opacity: .5;
+        }
+
+        .vignette {
+            background: radial-gradient(ellipse at center, transparent 52%, rgba(1, 4, 12, .72) 100%);
+        }
+
+        /* ============ 顶部 HUD ============ */
+        .hud {
+            position: fixed;
+            z-index: 20;
+            font-family: "Orbitron", "Noto Sans SC", sans-serif;
+            pointer-events: none;
+        }
+
+        .hud-tl {
+            top: 22px;
+            left: 26px;
+        }
+
+        .hud-tr {
+            top: 22px;
+            right: 26px;
+            text-align: right;
+        }
+
+        .hud-title {
+            font-size: 13px;
+            letter-spacing: .32em;
+            color: var(--cyan);
+            text-shadow: var(--glow);
+            font-weight: 600;
+        }
+
+        .hud-sub {
+            margin-top: 8px;
+            font-size: 11px;
+            letter-spacing: .22em;
+            color: rgba(190, 220, 255, .62);
+            font-family: "Noto Sans SC", sans-serif;
+        }
+
+        .hud-sub b {
+            color: var(--silver);
+            font-weight: 500;
+        }
+
+        .signal-dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 8px var(--cyan);
+            margin-right: 7px;
+            animation: blink 1.4s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .25
+            }
+        }
+
+        /* HUD 四角括号 */
+        .corner {
+            position: fixed;
+            width: 26px;
+            height: 26px;
+            z-index: 20;
+            pointer-events: none;
+            opacity: .7;
+        }
+
+        .corner::before,
+        .corner::after {
+            content: "";
+            position: absolute;
+            background: var(--cyan);
+            box-shadow: 0 0 6px rgba(111, 227, 255, .6);
+        }
+
+        .corner::before {
+            width: 100%;
+            height: 1px;
+        }
+
+        .corner::after {
+            width: 1px;
+            height: 100%;
+        }
+
+        .c-tl {
+            top: 14px;
+            left: 14px;
+        }
+
+        .c-tl::before {
+            top: 0;
+            left: 0
+        }
+
+        .c-tl::after {
+            top: 0;
+            left: 0
+        }
+
+        .c-tr {
+            top: 14px;
+            right: 14px;
+        }
+
+        .c-tr::before {
+            top: 0;
+            right: 0
+        }
+
+        .c-tr::after {
+            top: 0;
+            right: 0
+        }
+
+        .c-bl {
+            bottom: 14px;
+            left: 14px;
+        }
+
+        .c-bl::before {
+            bottom: 0;
+            left: 0
+        }
+
+        .c-bl::after {
+            bottom: 0;
+            left: 0
+        }
+
+        .c-br {
+            bottom: 14px;
+            right: 14px;
+        }
+
+        .c-br::before {
+            bottom: 0;
+            right: 0
+        }
+
+        .c-br::after {
+            bottom: 0;
+            right: 0
+        }
+
+        /* ============ 底部控制台 ============ */
+        .console {
+            position: fixed;
+            z-index: 30;
+            left: 50%;
+            bottom: 26px;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 14px 20px;
+            background: linear-gradient(160deg, rgba(14, 30, 66, .55), rgba(6, 14, 34, .66));
+            border: 1px solid var(--line);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(40, 120, 220, .18), inset 0 0 24px rgba(80, 160, 255, .07);
+            clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+            max-width: 94vw;
+        }
+
+        .btn {
+            pointer-events: auto;
+            cursor: pointer;
+            font-family: "Orbitron", "Noto Sans SC", sans-serif;
+            font-size: 12.5px;
+            letter-spacing: .14em;
+            color: var(--cyan-soft);
+            padding: 10px 18px;
+            background: rgba(28, 60, 120, .25);
+            border: 1px solid rgba(111, 227, 255, .4);
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+            transition: all .22s ease;
+            white-space: nowrap;
+            text-shadow: 0 0 8px rgba(111, 227, 255, .4);
+        }
+
+        .btn:hover {
+            background: rgba(60, 140, 230, .32);
+            color: #fff;
+            border-color: var(--cyan);
+            box-shadow: 0 0 18px rgba(111, 227, 255, .45);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0) scale(.97);
+        }
+
+        .speed-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 6px;
+        }
+
+        .speed-box label {
+            font-size: 11px;
+            letter-spacing: .18em;
+            color: rgba(190, 220, 255, .7);
+            font-family: "Orbitron", sans-serif;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 110px;
+            height: 3px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--cyan), rgba(111, 227, 255, .15));
+            outline: none;
+            pointer-events: auto;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 10px var(--cyan);
+            cursor: pointer;
+        }
+
+        .hint {
+            position: fixed;
+            z-index: 20;
+            left: 26px;
+            bottom: 30px;
+            font-size: 11px;
+            letter-spacing: .16em;
+            color: rgba(170, 205, 255, .5);
+            font-family: "Noto Sans SC", sans-serif;
+            pointer-events: none;
+        }
+
+        /* ============ 全息祝福投影面板 ============ */
+        .holo {
+            position: fixed;
+            z-index: 25;
+            left: 50%;
+            top: 50%;
+            width: min(580px, 92vw);
+            transform: translate(-50%, -46%) scale(.94);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .5s ease, transform .5s cubic-bezier(.2, .9, .25, 1.2);
+            background: linear-gradient(170deg, rgba(10, 26, 58, .72), rgba(4, 10, 28, .82));
+            border: 1px solid rgba(111, 227, 255, .45);
+            backdrop-filter: blur(14px);
+            padding: 26px 30px 22px;
+            box-shadow: 0 0 50px rgba(60, 150, 255, .25), inset 0 0 40px rgba(90, 180, 255, .08);
+        }
+
+        .holo.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+
+        .holo::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+            animation: holoscan 3s linear infinite;
+        }
+
+        @keyframes holoscan {
+            0% {
+                top: 0;
+                opacity: 1
+            }
+
+            90% {
+                opacity: 1
+            }
+
+            100% {
+                top: 100%;
+                opacity: 0
+            }
+        }
+
+        .holo-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: "Orbitron", sans-serif;
+            font-size: 11px;
+            letter-spacing: .26em;
+            color: var(--cyan);
+            text-shadow: var(--glow);
+            border-bottom: 1px dashed rgba(111, 227, 255, .3);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .holo-close {
+            cursor: pointer;
+            color: rgba(190, 220, 255, .6);
+            font-size: 16px;
+            pointer-events: auto;
+            transition: color .2s;
+        }
+
+        .holo-close:hover {
+            color: #fff;
+        }
+
+        .holo-body {
+            font-size: 15.5px;
+            line-height: 2.05;
+            color: var(--silver);
+            min-height: 180px;
+            font-weight: 300;
+            letter-spacing: .04em;
+        }
+
+        .holo-body p {
+            margin-bottom: 10px;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: all .5s ease;
+        }
+
+        .holo-body p.on {
+            opacity: 1;
+            transform: none;
+        }
+
+        .holo-body .hl {
+            color: var(--cyan);
+            text-shadow: 0 0 12px rgba(111, 227, 255, .55);
+            font-weight: 500;
+        }
+
+        .holo-body .sig {
+            text-align: right;
+            margin-top: 16px;
+            font-size: 13px;
+            color: rgba(160, 200, 255, .75);
+            font-family: "Orbitron", "Noto Sans SC", sans-serif;
+            letter-spacing: .1em;
+        }
+
+        .caret {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--cyan);
+            vertical-align: -2px;
+            margin-left: 2px;
+            animation: blink .8s steps(1) infinite;
+            box-shadow: 0 0 8px var(--cyan);
+        }
+
+        .holo-foot {
+            margin-top: 14px;
+            padding-top: 10px;
+            border-top: 1px dashed rgba(111, 227, 255, .25);
+            display: flex;
+            justify-content: space-between;
+            font-family: "Orbitron", sans-serif;
+            font-size: 10px;
+            letter-spacing: .2em;
+            color: rgba(150, 195, 255, .55);
+        }
+
+        /* ============ 曲速闪光 & Toast ============ */
+        #warpFlash {
+            position: fixed;
+            inset: 0;
+            z-index: 15;
+            pointer-events: none;
+            opacity: 0;
+            background: radial-gradient(circle at center, rgba(200, 240, 255, .9), rgba(80, 160, 255, .25) 45%, transparent 75%);
+        }
+
+        .toast {
+            position: fixed;
+            z-index: 40;
+            left: 50%;
+            top: 13%;
+            transform: translate(-50%, -14px);
+            padding: 10px 26px;
+            font-size: 13px;
+            letter-spacing: .18em;
+            color: var(--cyan);
+            background: rgba(8, 20, 48, .8);
+            border: 1px solid rgba(111, 227, 255, .5);
+            box-shadow: 0 0 24px rgba(111, 227, 255, .3);
+            opacity: 0;
+            transition: all .4s ease;
+            font-family: "Orbitron", "Noto Sans SC", sans-serif;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        /* ============ 加载层 ============ */
+        #loading {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: var(--space-0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 22px;
+            transition: opacity .8s ease;
+        }
+
+        #loading.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-ring {
+            width: 64px;
+            height: 64px;
+            border: 1px solid rgba(111, 227, 255, .2);
+            border-top-color: var(--cyan);
+            border-radius: 50%;
+            animation: spin 1.1s linear infinite;
+            box-shadow: 0 0 20px rgba(111, 227, 255, .25);
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        #loading .txt {
+            font-family: "Orbitron", sans-serif;
+            font-size: 12px;
+            letter-spacing: .34em;
+            color: var(--cyan);
+            text-shadow: var(--glow);
+        }
+
+        #loading .txt-cn {
+            font-size: 11px;
+            letter-spacing: .3em;
+            color: rgba(170, 205, 255, .5);
+        }
+
+        @media (max-width:640px) {
+            .hud-sub {
+                display: none;
+            }
+
+            .hint {
+                display: none;
+            }
+
+            .console {
+                gap: 8px;
+                padding: 10px 12px;
+                bottom: 16px;
+            }
+
+            .btn {
+                font-size: 11px;
+                padding: 9px 12px;
+                letter-spacing: .08em;
+            }
+
+            input[type=range] {
+                width: 74px;
+            }
+
+            .holo-body {
+                font-size: 14px;
+                line-height: 1.9;
+                min-height: 150px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Three.js 渲染画布 -->
+    <canvas id="scene"></canvas>
+
+    <!-- 全屏氛围覆盖层 -->
+    <div class="overlay scanlines"></div>
+    <div class="overlay vignette"></div>
+    <div id="warpFlash"></div>
+
+    <!-- 四角括号 -->
+    <div class="corner c-tl"></div>
+    <div class="corner c-tr"></div>
+    <div class="corner c-bl"></div>
+    <div class="corner c-br"></div>
+
+    <!-- 顶部 HUD -->
+    <div class="hud hud-tl">
+        <div class="hud-title">STELLAR BIRTHDAY TRANSMISSION</div>
+        <div class="hud-sub">任务编号：<b>DR-1025</b> · 目标星系：<b>丁睿生日星系</b></div>
+    </div>
+    <div class="hud hud-tr">
+        <div class="hud-title"><span class="signal-dot"></span>SIGNAL LOCKED</div>
+        <div class="hud-sub">星历日期 <b>10 · 25</b> · 量子链路稳定</div>
+    </div>
+
+    <!-- 操作提示 -->
+    <div class="hint">拖拽旋转星盘 · 滚轮缩放 · 点击中央恒星接收信号</div>
+
+    <!-- 底部控制台 -->
+    <div class="console">
+        <button class="btn" id="btnConstellation">✦ 点亮星座</button>
+        <button class="btn" id="btnWarp">⟡ 曲速探索</button>
+        <button class="btn" id="btnBroadcast">▸ 星际广播</button>
+        <div class="speed-box">
+            <label>星盘转速</label>
+            <input type="range" id="speedRange" min="0" max="100" value="35" />
+        </div>
+    </div>
+
+    <!-- 全息祝福投影 -->
+    <div class="holo" id="holo">
+        <div class="holo-head">
+            <span>HOLOGRAPHIC TRANSMISSION · 全息投影</span>
+            <span class="holo-close" id="holoClose">✕</span>
+        </div>
+        <div class="holo-body" id="holoBody"></div>
+        <div class="holo-foot">
+            <span>FROM : DEEP SPACE · 光年之外</span>
+            <span>TO : 丁睿</span>
+        </div>
+    </div>
+
+    <!-- 提示条 -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 加载层 -->
+    <div id="loading">
+        <div class="loader-ring"></div>
+        <div class="txt">INITIALIZING STELLAR SYSTEM</div>
+        <div class="txt-cn">正在校准星图 · 连接丁睿的生日星系</div>
+    </div>
+
+    <script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+        /* ============================================================
+         * 数据区：寿星信息与星际广播祝福语
+         * ==========================================================*/
+        const BIRTHDAY = { name: '丁睿', date: '10 · 25' };
+
+        // 星际广播逐条播送的祝福文案（科技形式包裹真挚情感）
+        const MESSAGES = [
+            '星际广播已接通，信号来自 <span class="hl">10 月 25 日</span> 的光年深处……',
+            '丁睿，你好。这是一颗专门为你点亮的生日星球。',
+            '此刻，全宇宙的星辰都在重新排列，拼成你的名字。',
+            '愿你新的一岁：<span class="hl">眼里有光，心中有海，前路有星辰引路</span>。',
+            '愿所有你热爱的事物，都像星云一样，在时光里悄然成河。',
+            '<span class="hl">生日快乐，丁睿。</span>愿你的每一次仰望，都有流星恰好经过。'
+        ];
+        const SIGNATURE = '—— 跨越光年的朋友 敬上';
+
+        /* ============================================================
+         * 全局状态
+         * ==========================================================*/
+        let renderer, scene, camera, composer, bloomPass;
+        let worldGroup, fxGroup;              // worldGroup 随拖拽旋转；fxGroup 承载名字/星座并带视差
+        let starField, starGeo, starFieldUni; // 背景星野（曲速时向相机方向流动）
+        let warpStreaks, streakGeo;          // 曲速星线
+        let centralGroup, starSphere, wireShell, particleRing;
+        let coronaUniList = [];              // 日珥/太阳等着色器粒子的 uniforms（每帧注入时间）
+        let resizeUniList = [];              // 需要随画布尺寸更新 uHeightScale 的 uniforms
+        let planets = [];
+        let nameDust = null;                 // 「丁睿」星尘粒子
+        let constellation = null;            // 星座连线
+        let burstSys = null;                 // 点击恒星的粒子爆发
+        let glowTex, nebulaTex = [];
+
+        const clock = new THREE.Clock();
+        const pointer = new THREE.Vector2(0, 0);
+        const raycaster = new THREE.Raycaster();
+
+        let autoSpeed = 0.00035 * 60;        // 星盘自动转速（由滑块控制）
+        let dragState = { down: false, x: 0, y: 0, moved: 0 };
+        let warp = { active: false, t: 0, dur: 2.8, env: 0 };
+        let nameAssembled = false;
+
+        /* ============================================================
+         * 音频：WebAudio 合成科幻音效（无外部资源）
+         * ==========================================================*/
+        let audioCtx = null;
+
+        // 首次用户交互时初始化音频上下文
+        function ensureAudio() {
+            if (!audioCtx) {
+                try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
+            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+        // 播放一个合成单音（广播滴答 / 按钮反馈）
+        function tone(freq, dur = 0.12, type = 'sine', vol = 0.035, delay = 0) {
+            if (!audioCtx) return;
+            const t0 = audioCtx.currentTime + delay;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type; osc.frequency.setValueAtTime(freq, t0);
+            gain.gain.setValueAtTime(0, t0);
+            gain.gain.linearRampToValueAtTime(vol, t0 + 0.015);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+            osc.connect(gain).connect(audioCtx.destination);
+            osc.start(t0); osc.stop(t0 + dur + 0.05);
+        }
+        // 曲速引擎的频率上扫音效
+        function warpSweep() {
+            if (!audioCtx) return;
+            const t0 = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(80, t0);
+            osc.frequency.exponentialRampToValueAtTime(1400, t0 + 1.4);
+            osc.frequency.exponentialRampToValueAtTime(120, t0 + 2.8);
+            gain.gain.setValueAtTime(0.0001, t0);
+            gain.gain.linearRampToValueAtTime(0.05, t0 + 0.8);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 2.8);
+            osc.connect(gain).connect(audioCtx.destination);
+            osc.start(t0); osc.stop(t0 + 2.9);
+        }
+
+        /* ============================================================
+         * 程序化纹理：辉光光斑 / 星云 / 星体表面
+         * ==========================================================*/
+
+        // 生成径向渐变的柔和光斑纹理（用于星点、辉光）
+        function makeGlowTexture() {
+            const c = document.createElement('canvas'); c.width = c.height = 128;
+            const g = c.getContext('2d');
+            const grad = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+            grad.addColorStop(0, 'rgba(255,255,255,1)');
+            grad.addColorStop(0.25, 'rgba(190,230,255,.85)');
+            grad.addColorStop(0.55, 'rgba(110,180,255,.28)');
+            grad.addColorStop(1, 'rgba(0,60,180,0)');
+            g.fillStyle = grad; g.fillRect(0, 0, 128, 128);
+            return new THREE.CanvasTexture(c);
+        }
+
+        // 生成彩色星云纹理（大块朦胧云气）
+        function makeNebulaTexture(r, g, b) {
+            const c = document.createElement('canvas'); c.width = c.height = 256;
+            const ctx = c.getContext('2d');
+            // 多层不同心的径向渐变叠加，形成不规则云团
+            for (let i = 0; i < 6; i++) {
+                const cx = 128 + (Math.random() - 0.5) * 90;
+                const cy = 128 + (Math.random() - 0.5) * 90;
+                const rad = 60 + Math.random() * 90;
+                const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
+                grad.addColorStop(0, `rgba(${r},${g},${b},.55)`);
+                grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+                ctx.fillStyle = grad; ctx.fillRect(0, 0, 256, 256);
+            }
+            return new THREE.CanvasTexture(c);
+        }
+
+        // 创建中央恒星的动态等离子表面材质（GLSL 多层 fbm 噪声 + 临边日冕 + 脉动）
+        function createPlasmaMaterial() {
+            return new THREE.ShaderMaterial({
+                uniforms: { uTime: { value: 0 } },
+                vertexShader: `
+                    varying vec3 vNormalV;
+                    varying vec3 vViewDir;
+                    varying vec3 vObj;
+                    void main(){
+                        vObj = position;
+                        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+                        vNormalV = normalize(normalMatrix * normal);
+                        vViewDir = normalize(-mv.xyz);
+                        gl_Position = projectionMatrix * mv;
+                    }
+                `,
+                fragmentShader: `
+                    uniform float uTime;
+                    varying vec3 vNormalV;
+                    varying vec3 vViewDir;
+                    varying vec3 vObj;
+                    // 三维哈希
+                    float hash31(vec3 p){
+                        p = fract(p * 0.3183 + vec3(0.11, 0.23, 0.37));
+                        p *= 17.0;
+                        return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+                    }
+                    // 三线性插值 value noise
+                    float vnoise(vec3 p){
+                        vec3 i = floor(p), f = fract(p);
+                        f = f * f * (3.0 - 2.0 * f);
+                        float n000 = hash31(i + vec3(0,0,0));
+                        float n100 = hash31(i + vec3(1,0,0));
+                        float n010 = hash31(i + vec3(0,1,0));
+                        float n110 = hash31(i + vec3(1,1,0));
+                        float n001 = hash31(i + vec3(0,0,1));
+                        float n101 = hash31(i + vec3(1,0,1));
+                        float n011 = hash31(i + vec3(0,1,1));
+                        float n111 = hash31(i + vec3(1,1,1));
+                        return mix(mix(mix(n000,n100,f.x), mix(n010,n110,f.x), f.y),
+                                   mix(mix(n001,n101,f.x), mix(n011,n111,f.x), f.y), f.z);
+                    }
+                    // 分形布朗运动：四层噪声叠加形成翻涌等离子
+                    float fbm(vec3 p){
+                        float v = 0.0, a = 0.5;
+                        for(int i = 0; i < 4; i++){ v += a * vnoise(p); p *= 2.03; a *= 0.5; }
+                        return v;
+                    }
+                    void main(){
+                        float t = uTime;
+                        vec3 dir = normalize(vObj);
+                        vec3 p = dir * 2.4;
+                        // 三个不同速度/频率的流动域，制造深度感
+                        float q = fbm(p + vec3(t * 0.10, t * 0.06, -t * 0.08));
+                        float r = fbm(p * 2.7 + vec3(-t * 0.16, q * 2.2, t * 0.12));
+                        float s = fbm(p * 5.5 - vec3(t * 0.30, 0.0, t * 0.22));
+                        float plasma = q * 0.55 + r * 0.35 + s * 0.10;
+                        // 深蓝 → 青蓝 → 白热 三段调色
+                        vec3 deep = vec3(0.03, 0.13, 0.48);
+                        vec3 teal = vec3(0.10, 0.55, 0.95);
+                        vec3 hot  = vec3(0.80, 0.93, 1.00);
+                        vec3 col = mix(deep, teal, smoothstep(0.22, 0.68, plasma));
+                        col = mix(col, hot, smoothstep(0.60, 0.92, plasma));
+                        // 米粒组织亮斑
+                        col += vec3(0.70, 0.85, 1.0) * smoothstep(0.72, 1.0, s) * 0.5;
+                        // 临边日冕辉光
+                        float ndv = max(dot(vNormalV, vViewDir), 0.0);
+                        float fres = pow(1.0 - ndv, 2.4);
+                        col += vec3(0.45, 0.78, 1.0) * fres * 1.25;
+                        // 整体能量脉动
+                        col *= 0.92 + 0.08 * sin(t * 1.6);
+                        gl_FragColor = vec4(col, 1.0);
+                    }
+                `
+            });
+        }
+
+        // 生成围绕恒星的径向运动粒子（日珥漂浮 / 太阳风外逸，全部在 GPU 内计算，零 CPU 开销）
+        function createRadialParticleSystem(count, mode, cfg) {
+            const dirs = new Float32Array(count * 3);
+            const meta = new Float32Array(count * 2);
+            const cols = new Float32Array(count * 3);
+            const cA = new THREE.Color(cfg.colorA), cB = new THREE.Color(cfg.colorB);
+            for (let i = 0; i < count; i++) {
+                // 均匀球面方向
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(Math.random() * 2 - 1);
+                dirs[i * 3] = Math.sin(phi) * Math.cos(theta);
+                dirs[i * 3 + 1] = Math.sin(phi) * Math.sin(theta);
+                dirs[i * 3 + 2] = Math.cos(phi);
+                meta[i * 2] = Math.random() * cfg.range;            // 相位偏移
+                meta[i * 2 + 1] = cfg.speedMin + Math.random() * (cfg.speedMax - cfg.speedMin);
+                const c = Math.random() > 0.5 ? cA : cB;
+                const k = 0.75 + Math.random() * 0.25;
+                cols[i * 3] = c.r * k; cols[i * 3 + 1] = c.g * k; cols[i * 3 + 2] = c.b * k;
+            }
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
+            geo.setAttribute('aDir', new THREE.BufferAttribute(dirs, 3));
+            geo.setAttribute('aMeta', new THREE.BufferAttribute(meta, 2));
+            geo.setAttribute('color', new THREE.BufferAttribute(cols, 3));
+            const uniforms = {
+                uTime: { value: 0 },
+                uMap: { value: glowTex },
+                uBase: { value: cfg.base },
+                uRange: { value: cfg.range },
+                uSize: { value: cfg.size },
+                uMode: { value: mode },        // 0 = 日珥正弦漂浮，1 = 太阳风线性外逸
+                uHeightScale: { value: 100 }
+            };
+            const mat = new THREE.ShaderMaterial({
+                uniforms,
+                transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+                vertexShader: `
+                    uniform float uTime, uBase, uRange, uSize, uMode, uHeightScale;
+                    attribute vec3 aDir; attribute vec2 aMeta; attribute vec3 color;
+                    varying float vFade; varying vec3 vColor;
+                    void main(){
+                        float dist;
+                        if(uMode > 0.5){
+                            // 太阳风：从表面线性外逸、到点重置
+                            dist = uBase + mod(uTime * aMeta.y + aMeta.x, uRange);
+                            vFade = 1.0 - (dist - uBase) / uRange;
+                        } else {
+                            // 日珥：沿法线正弦起伏漂浮
+                            dist = uBase + (0.5 + 0.5 * sin(uTime * aMeta.y + aMeta.x)) * uRange;
+                            vFade = 0.45 + 0.55 * sin(uTime * aMeta.y + aMeta.x) * 0.5 + 0.275;
+                        }
+                        vColor = color * (0.45 + 0.55 * vFade);
+                        vec4 mv = modelViewMatrix * vec4(aDir * dist, 1.0);
+                        gl_PointSize = uSize * uHeightScale / max(-mv.z, 0.1) * (0.55 + vFade * 0.7);
+                        gl_Position = projectionMatrix * mv;
+                    }
+                `,
+                fragmentShader: `
+                    uniform sampler2D uMap;
+                    varying float vFade; varying vec3 vColor;
+                    void main(){
+                        vec4 tex = texture2D(uMap, gl_PointCoord);
+                        if(tex.a < 0.02) discard;
+                        gl_FragColor = vec4(vColor, tex.a * vFade);
+                    }
+                `
+            });
+            const points = new THREE.Points(geo, mat);
+            coronaUniList.push(uniforms);
+            resizeUniList.push(uniforms);
+            return points;
+        }
+
+        /* ============================================================
+         * 场景初始化
+         * ==========================================================*/
+
+        // 初始化渲染器、相机、后期泛光
+        function initRenderer() {
+            const canvas = document.getElementById('scene');
+            renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setSize(innerWidth, innerHeight);
+            renderer.setClearColor(0x02060f, 1);
+
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x02060f, 0.008);
+
+            camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 400);
+            camera.position.set(0, 0, 11);
+
+            // Bloom 泛光：让恒星、星点、连线产生辉光
+            composer = new EffectComposer(renderer);
+            composer.addPass(new RenderPass(scene, camera));
+            bloomPass = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.7, 0.5, 0.2);
+            composer.addPass(bloomPass);
+            composer.addPass(new OutputPass());
+
+            window.addEventListener('resize', onResize);
+        }
+
+        // 窗口尺寸变化时同步相机与后期管线，并把物理像素高度比例下发给各点粒子着色器
+        function onResize() {
+            camera.aspect = innerWidth / innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(innerWidth, innerHeight);
+            composer.setSize(innerWidth, innerHeight);
+            if (fxGroup) fxGroup.scale.setScalar(camera.aspect < 0.75 ? 0.72 : 1);
+            const hs = renderer.domElement.height / 2 / Math.tan(camera.fov * Math.PI / 360);
+            resizeUniList.forEach(u => { if (u.uHeightScale) u.uHeightScale.value = hs; });
+        }
+
+        // 创建深邃背景星野：分三级星点尺寸、冷暖层次、各自闪烁（曲速时向相机方向流动）
+        function createStarField() {
+            const COUNT = 7000;
+            const pos = new Float32Array(COUNT * 3);
+            const col = new Float32Array(COUNT * 3);
+            const sizes = new Float32Array(COUNT);
+            const phases = new Float32Array(COUNT);
+            const speeds = new Float32Array(COUNT);
+            // 蓝白主调 + 少量纯白与淡金亮星，形成色彩层次
+            const palette = [
+                { c: new THREE.Color(0xbfe0ff), w: 0.42 },
+                { c: new THREE.Color(0x7fc4ff), w: 0.26 },
+                { c: new THREE.Color(0xd9e8ff), w: 0.20 },
+                { c: new THREE.Color(0xffffff), w: 0.08 },
+                { c: new THREE.Color(0xffd9a8), w: 0.04 }
+            ];
+            for (let i = 0; i < COUNT; i++) {
+                pos[i * 3] = (Math.random() - 0.5) * 130;
+                pos[i * 3 + 1] = (Math.random() - 0.5) * 90;
+                pos[i * 3 + 2] = -Math.random() * 140 + 10;
+                // 按权重挑选颜色
+                const roll = Math.random(); let acc = 0, chosen = palette[0];
+                for (const item of palette) { acc += item.w; if (roll <= acc) { chosen = item; break; } }
+                const b = 0.35 + Math.random() * 0.65;
+                col[i * 3] = chosen.c.r * b; col[i * 3 + 1] = chosen.c.g * b; col[i * 3 + 2] = chosen.c.b * b;
+                // 尺寸分级：70% 微尘星 / 25% 中星 / 5% 明亮导航星
+                const sr = Math.random();
+                sizes[i] = sr < 0.70 ? 0.18 + Math.random() * 0.22
+                    : sr < 0.95 ? 0.45 + Math.random() * 0.35
+                        : 0.95 + Math.random() * 0.85;
+                phases[i] = Math.random() * Math.PI * 2;
+                speeds[i] = 0.6 + Math.random() * 2.6;
+            }
+            starGeo = new THREE.BufferGeometry();
+            starGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+            starGeo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+            starGeo.setAttribute('aSize', new THREE.BufferAttribute(sizes, 1));
+            starGeo.setAttribute('aPhase', new THREE.BufferAttribute(phases, 1));
+            starGeo.setAttribute('aSpeed', new THREE.BufferAttribute(speeds, 1));
+            starFieldUni = {
+                uTime: { value: 0 },
+                uMap: { value: glowTex },
+                uWarp: { value: 0 },
+                uHeightScale: { value: 100 }
+            };
+            const mat = new THREE.ShaderMaterial({
+                uniforms: starFieldUni,
+                transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+                vertexShader: `
+                    uniform float uTime, uWarp, uHeightScale;
+                    attribute float aSize, aPhase, aSpeed;
+                    attribute vec3 color;
+                    varying float vTw;
+                    varying vec3 vColor;
+                    void main(){
+                        vColor = color;
+                        // 每颗星独立的正弦闪烁
+                        float tw = 0.62 + 0.38 * sin(uTime * aSpeed + aPhase);
+                        vTw = tw;
+                        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+                        gl_PointSize = aSize * uHeightScale / max(-mv.z, 0.1)
+                                     * (0.82 + 0.28 * tw) * (1.0 + uWarp * 1.3);
+                        gl_Position = projectionMatrix * mv;
+                    }
+                `,
+                fragmentShader: `
+                    uniform sampler2D uMap;
+                    uniform float uWarp;
+                    varying float vTw;
+                    varying vec3 vColor;
+                    void main(){
+                        vec4 tex = texture2D(uMap, gl_PointCoord);
+                        if (tex.a < 0.02) discard;
+                        gl_FragColor = vec4(vColor * vTw * (0.8 + uWarp * 0.9), tex.a);
+                    }
+                `
+            });
+            starField = new THREE.Points(starGeo, mat);
+            worldGroup.add(starField);
+            resizeUniList.push(starFieldUni);
+        }
+
+        // 每帧推进星野：缓慢漂移 / 曲速时高速流动
+        function updateStarField(dt) {
+            const arr = starGeo.attributes.position.array;
+            const speed = warp.active ? 2 + warp.env * 95 : 2.2;
+            for (let i = 0; i < arr.length; i += 3) {
+                arr[i + 2] += speed * dt;
+                if (arr[i + 2] > camera.position.z + 6) {
+                    arr[i + 2] = -130;
+                    arr[i] = (Math.random() - 0.5) * 130;
+                    arr[i + 1] = (Math.random() - 0.5) * 90;
+                }
+            }
+            starGeo.attributes.position.needsUpdate = true;
+            starFieldUni.uWarp.value = warp.env;
+        }
+
+        // 创建曲速星线（曲速时可见的拉长光条）
+        function createWarpStreaks() {
+            const N = 240;
+            const positions = new Float32Array(N * 2 * 3);
+            const meta = [];
+            for (let i = 0; i < N; i++) {
+                meta.push({
+                    x: (Math.random() - 0.5) * 90, y: (Math.random() - 0.5) * 70,
+                    z: -Math.random() * 130, len: 6 + Math.random() * 14
+                });
+            }
+            streakGeo = new THREE.BufferGeometry();
+            streakGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const mat = new THREE.LineBasicMaterial({
+                color: 0x9fdcff, transparent: true, opacity: 0,
+                blending: THREE.AdditiveBlending, depthWrite: false
+            });
+            warpStreaks = new THREE.LineSegments(streakGeo, mat);
+            warpStreaks.userData.meta = meta;
+            worldGroup.add(warpStreaks);
+        }
+
+        // 每帧更新曲速星线位置、长度与透明度
+        function updateWarpStreaks(dt) {
+            const arr = streakGeo.attributes.position.array;
+            const meta = warpStreaks.userData.meta;
+            const flow = 2 + warp.env * 130;
+            for (let i = 0; i < meta.length; i++) {
+                const m = meta[i];
+                m.z += flow * dt;
+                if (m.z > camera.position.z + 8) {
+                    m.z = -130;
+                    m.x = (Math.random() - 0.5) * 90;
+                    m.y = (Math.random() - 0.5) * 70;
+                }
+                const stretch = m.len * (0.15 + warp.env * 1.6);
+                arr[i * 6] = m.x; arr[i * 6 + 1] = m.y; arr[i * 6 + 2] = m.z;
+                arr[i * 6 + 3] = m.x; arr[i * 6 + 4] = m.y; arr[i * 6 + 5] = m.z - stretch;
+            }
+            streakGeo.attributes.position.needsUpdate = true;
+            warpStreaks.material.opacity = warp.env * 0.85;
+        }
+
+        // 创建漂浮的彩色星云 Sprite
+        function createNebulas() {
+            const configs = [
+                { rgb: [40, 90, 220], pos: [-26, 10, -55], scale: 46, opacity: .20, rot: 0.05 },
+                { rgb: [120, 70, 220], pos: [30, -8, -60], scale: 52, opacity: .16, rot: -0.04 },
+                { rgb: [30, 160, 220], pos: [10, 22, -48], scale: 38, opacity: .15, rot: 0.07 },
+                { rgb: [60, 110, 255], pos: [-14, -20, -52], scale: 42, opacity: .17, rot: -0.06 },
+                { rgb: [150, 80, 230], pos: [4, -4, -70], scale: 60, opacity: .12, rot: 0.03 }
+            ];
+            configs.forEach(cfg => {
+                const tex = makeNebulaTexture(...cfg.rgb);
+                nebulaTex.push(tex);
+                const mat = new THREE.SpriteMaterial({
+                    map: tex, transparent: true, opacity: cfg.opacity,
+                    blending: THREE.AdditiveBlending, depthWrite: false
+                });
+                const sp = new THREE.Sprite(mat);
+                sp.position.set(...cfg.pos);
+                sp.scale.setScalar(cfg.scale);
+                sp.userData.rot = cfg.rot;
+                worldGroup.add(sp);
+            });
+        }
+
+        // 创建中央生日恒星：发光球体 + 线框科技外壳 + 粒子环 + 轨道行星
+        function createCentralStar() {
+            centralGroup = new THREE.Group();
+            centralGroup.position.z = -2.2; // 恒星退到名字之后，形成「名字在前、恒星在后」的景深层
+            worldGroup.add(centralGroup);
+
+            // 外层辉光（呼吸式脉动）—— 尺寸/透明度收敛，避免盖住名字与星座
+            const glowMat = new THREE.SpriteMaterial({
+                map: glowTex, color: 0x8fc8ff, transparent: true, opacity: .22,
+                blending: THREE.AdditiveBlending, depthWrite: false
+            });
+            const glow = new THREE.Sprite(glowMat);
+            glow.scale.setScalar(4.2);
+            centralGroup.add(glow);
+            centralGroup.userData.glow = glow;
+
+            // 恒星本体：GPU 动态翻涌等离子表面
+            starSphere = new THREE.Mesh(
+                new THREE.SphereGeometry(0.85, 64, 64),
+                createPlasmaMaterial()
+            );
+            centralGroup.add(starSphere);
+
+            // 日珥：紧贴恒星表面沿法线起伏的光尘
+            const prominences = createRadialParticleSystem(170, 0, {
+                base: 0.9, range: 0.6, size: 0.11,
+                speedMin: 0.35, speedMax: 1.1,
+                colorA: 0x9fd8ff, colorB: 0xdce9ff
+            });
+            centralGroup.add(prominences);
+
+            // 太阳风：持续向外逸散的能量粒子流
+            const solarWind = createRadialParticleSystem(260, 1, {
+                base: 1.0, range: 2.0, size: 0.085,
+                speedMin: 0.22, speedMax: 0.65,
+                colorA: 0x7fc4ff, colorB: 0xbfe6ff
+            });
+            centralGroup.add(solarWind);
+
+            // 日冕弧环：两枚不同倾角的细环，透明度周期性涨落
+            const ringCfgs = [
+                { r: 1.2, rot: [Math.PI * 0.42, 0.3, 0], color: 0x8fd8ff },
+                { r: 1.45, rot: [-0.25, Math.PI * 0.3, 0.6], color: 0xa99bff }
+            ];
+            centralGroup.userData.coronaRings = ringCfgs.map(cfg => {
+                const ring = new THREE.Mesh(
+                    new THREE.TorusGeometry(cfg.r, 0.008, 6, 160),
+                    new THREE.MeshBasicMaterial({
+                        color: cfg.color, transparent: true, opacity: .32,
+                        blending: THREE.AdditiveBlending, depthWrite: false
+                    })
+                );
+                ring.rotation.set(...cfg.rot);
+                centralGroup.add(ring);
+                return ring;
+            });
+
+            // 科技感线框外壳（两层，反向旋转）
+            wireShell = new THREE.Mesh(
+                new THREE.IcosahedronGeometry(1.3, 1),
+                new THREE.MeshBasicMaterial({ color: 0x6fd8ff, wireframe: true, transparent: true, opacity: .28 })
+            );
+            centralGroup.add(wireShell);
+            const wireShell2 = new THREE.Mesh(
+                new THREE.IcosahedronGeometry(1.6, 0),
+                new THREE.MeshBasicMaterial({ color: 0x8f7bff, wireframe: true, transparent: true, opacity: .16 })
+            );
+            wireShell2.userData.spin = -0.12;
+            centralGroup.add(wireShell2);
+            centralGroup.userData.shell2 = wireShell2;
+
+            // 倾斜的轨道能量环
+            const torus = new THREE.Mesh(
+                new THREE.TorusGeometry(1.85, 0.018, 8, 128),
+                new THREE.MeshBasicMaterial({ color: 0x9fd8ff, transparent: true, opacity: .55 })
+            );
+            torus.rotation.x = Math.PI * 0.38;
+            centralGroup.add(torus);
+
+            // 环绕恒星的粒子环
+            const RING = 600;
+            const rp = new Float32Array(RING * 3), rc = new Float32Array(RING * 3);
+            for (let i = 0; i < RING; i++) {
+                const a = Math.random() * Math.PI * 2;
+                const r = 2.0 + Math.random() * 0.35;
+                rp[i * 3] = Math.cos(a) * r; rp[i * 3 + 1] = (Math.random() - 0.5) * 0.14; rp[i * 3 + 2] = Math.sin(a) * r;
+                const c = Math.random() > .5 ? new THREE.Color(0x9fd8ff) : new THREE.Color(0xdce9ff);
+                rc[i * 3] = c.r; rc[i * 3 + 1] = c.g; rc[i * 3 + 2] = c.b;
+            }
+            const rg = new THREE.BufferGeometry();
+            rg.setAttribute('position', new THREE.BufferAttribute(rp, 3));
+            rg.setAttribute('color', new THREE.BufferAttribute(rc, 3));
+            particleRing = new THREE.Points(rg, new THREE.PointsMaterial({
+                size: .11, map: glowTex, vertexColors: true, transparent: true, opacity: .9,
+                blending: THREE.AdditiveBlending, depthWrite: false
+            }));
+            particleRing.rotation.x = Math.PI * 0.38;
+            centralGroup.add(particleRing);
+
+            // 两颗公转行星与轨道线
+            const orbitContainer = new THREE.Group();
+            orbitContainer.rotation.x = 0.32;
+            centralGroup.add(orbitContainer);
+            const pCfg = [
+                { r: 2.7, size: .22, color: 0x8fb8ff, speed: .55 },
+                { r: 3.5, size: .30, color: 0xc9a7ff, speed: .34 }
+            ];
+            pCfg.forEach(cfg => {
+                const orbit = new THREE.LineLoop(
+                    new THREE.BufferGeometry().setFromPoints(
+                        Array.from({ length: 128 }, (_, i) => {
+                            const a = i / 128 * Math.PI * 2;
+                            return new THREE.Vector3(Math.cos(a) * cfg.r, 0, Math.sin(a) * cfg.r);
+                        })
+                    ),
+                    new THREE.LineBasicMaterial({ color: 0x6fa8e8, transparent: true, opacity: .18 })
+                );
+                orbitContainer.add(orbit);
+                const planet = new THREE.Mesh(
+                    new THREE.SphereGeometry(cfg.size, 24, 24),
+                    new THREE.MeshBasicMaterial({ color: cfg.color })
+                );
+                const pGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+                    map: glowTex, color: cfg.color, transparent: true, opacity: .6,
+                    blending: THREE.AdditiveBlending, depthWrite: false
+                }));
+                pGlow.scale.setScalar(cfg.size * 5);
+                planet.add(pGlow);
+                orbitContainer.add(planet);
+                planets.push({ mesh: planet, r: cfg.r, speed: cfg.speed, angle: Math.random() * Math.PI * 2 });
+            });
+        }
+
+        /* ============================================================
+         * 「丁睿」星尘文字：离屏画布采样文字像素 → 3D 粒子汇聚成形
+         * ==========================================================*/
+
+        // 采样文字像素，生成星尘粒子（从散乱状态汇聚成名字）
+        function createNameDust() {
+            const cv = document.createElement('canvas');
+            const ctx = cv.getContext('2d');
+            ctx.font = '700 230px "Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif';
+            const nameW = ctx.measureText(BIRTHDAY.name).width;
+            ctx.font = '600 62px Orbitron, sans-serif';
+            const subW = 62 * 8.2; // HAPPY BIRTHDAY 近似宽度
+            const W = Math.ceil(Math.max(nameW, subW)) + 80;
+            const H = 400;
+            cv.width = W; cv.height = H;
+
+            ctx.fillStyle = '#fff';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.font = '700 230px "Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif';
+            ctx.fillText(BIRTHDAY.name, W / 2, H * 0.38);
+            ctx.font = '600 58px Orbitron, sans-serif';
+            ctx.fillText('HAPPY BIRTHDAY', W / 2, H * 0.74);
+            ctx.font = '400 30px Orbitron, sans-serif';
+            ctx.fillText('★  10 · 25  ★', W / 2, H * 0.9);
+
+            const data = ctx.getImageData(0, 0, W, H).data;
+            const targets = [], starts = [], colors = [], haloColors = [];
+            const SCALE = 118;
+            const cTop = new THREE.Color(0x8fd6ff);
+            const cMid = new THREE.Color(0xf4f9ff);
+            const cBot = new THREE.Color(0x7fb8ff);
+            const cHalo = new THREE.Color(0x6fc8ff);
+
+            // 采样步长 3px：更密的星尘让笔画饱满醒目
+            for (let y = 0; y < H; y += 3) {
+                for (let x = 0; x < W; x += 3) {
+                    if (data[(y * W + x) * 4 + 3] > 128) {
+                        const tx = (x - W / 2) / SCALE;
+                        const ty = -(y - H / 2) / SCALE + 0.2;
+                        const tz = (Math.random() - 0.5) * 0.5;
+                        targets.push(tx, ty, tz);
+                        // 起点：从名字附近的星辰汇聚而成（近距离散乱分布）
+                        const theta = Math.random() * Math.PI * 2, phi = Math.acos(Math.random() * 2 - 1);
+                        const rr = 3 + Math.random() * 4;
+                        starts.push(
+                            tx + rr * Math.sin(phi) * Math.cos(theta),
+                            ty + rr * Math.sin(phi) * Math.sin(theta) * 0.6,
+                            tz + rr * Math.cos(phi) * 0.3 - 2
+                        );
+                        // 颜色按纵向渐变：科技银 + 宇宙蓝，亮度上浮让名字更耀眼
+                        const mix = y / H;
+                        const c = mix < .5
+                            ? cTop.clone().lerp(cMid, mix * 2)
+                            : cMid.clone().lerp(cBot, (mix - .5) * 2);
+                        const jitter = 1.0 + Math.random() * 0.32;
+                        colors.push(c.r * jitter, c.g * jitter, c.b * jitter);
+                        // 光晕层：统一青蓝色柔光
+                        const hk = 0.55 + Math.random() * 0.3;
+                        haloColors.push(cHalo.r * hk, cHalo.g * hk, cHalo.b * hk);
+                    }
+                }
+            }
+
+            // 主层与光晕层共享同一份位置属性，一次更新两层同步
+            const posAttr = new THREE.BufferAttribute(new Float32Array(starts), 3);
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', posAttr);
+            geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
+            const mat = new THREE.PointsMaterial({
+                size: .095, map: glowTex, vertexColors: true, transparent: true, opacity: 0,
+                blending: THREE.AdditiveBlending, depthWrite: false
+            });
+            const points = new THREE.Points(geo, mat);
+            fxGroup.add(points);
+
+            // 大尺寸低透明度的光晕层：为每个文字粒子裹上柔和光晕
+            const haloGeo = new THREE.BufferGeometry();
+            haloGeo.setAttribute('position', posAttr);
+            haloGeo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(haloColors), 3));
+            const haloMat = new THREE.PointsMaterial({
+                size: .22, map: glowTex, vertexColors: true, transparent: true, opacity: 0,
+                blending: THREE.AdditiveBlending, depthWrite: false
+            });
+            const halo = new THREE.Points(haloGeo, haloMat);
+            fxGroup.add(halo);
+
+            // 名字背后的淡蓝背光，进一步强化可读性
+            const backMat = new THREE.SpriteMaterial({
+                map: glowTex, color: 0x2f7fd8, transparent: true, opacity: 0,
+                blending: THREE.AdditiveBlending, depthWrite: false
+            });
+            const backlight = new THREE.Sprite(backMat);
+            backlight.scale.setScalar(9.5);
+            backlight.position.z = -0.6;
+            fxGroup.add(backlight);
+
+            nameDust = {
+                points, halo, backlight, posAttr,
+                starts: new Float32Array(starts),
+                targets: new Float32Array(targets),
+                progress: 0, done: false,
+                delay: 1.0   // 进入界面后约 1 秒自动开始汇聚
+            };
+        }
+
+        // 每帧推进名字星尘的汇聚动画（延迟 1s 后由附近星辰汇聚成形）
+        function updateNameDust(dt) {
+            if (!nameDust || nameDust.done) return;
+            // 延迟期：等待 1 秒后开始汇聚
+            if (nameDust.delay > 0) {
+                nameDust.delay -= dt;
+                return;
+            }
+            nameDust.progress = Math.min(1, nameDust.progress + dt / 2.0);
+            const p = nameDust.progress;
+            const ease = 1 - Math.pow(1 - p, 3); // easeOutCubic
+            const arr = nameDust.posAttr.array;
+            for (let i = 0; i < arr.length; i++) {
+                arr[i] = nameDust.starts[i] + (nameDust.targets[i] - nameDust.starts[i]) * ease;
+            }
+            nameDust.posAttr.needsUpdate = true; // 主层与光晕层共享属性，一次更新
+            nameDust.points.material.opacity = Math.min(0.7, p * 1.0);
+            nameDust.halo.material.opacity = Math.min(0.12, p * 0.18);
+            nameDust.backlight.material.opacity = Math.min(0.08, p * 0.12);
+            if (p >= 1) { nameDust.done = true; nameAssembled = true; }
+        }
+
+        /* ============================================================
+         * 丁睿专属星座：天蝎座 Scorpius（真实星点连线，点击后逐段点亮）
+         * ==========================================================*/
+
+        // 生成天蝎座全息文字标签（♏ 符号 + 名称），点亮后渐显
+        function makeScorpiusLabel() {
+            const c = document.createElement('canvas'); c.width = 480; c.height = 120;
+            const ctx = c.getContext('2d');
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.shadowColor = 'rgba(111,227,255,.9)'; ctx.shadowBlur = 18;
+            ctx.fillStyle = '#aef0ff';
+            ctx.font = '64px "Noto Sans SC","Segoe UI Symbol",sans-serif';
+            ctx.fillText('♏', 60, 62);
+            ctx.font = '600 34px Orbitron, sans-serif';
+            ctx.fillText('SCORPIUS', 270, 48);
+            ctx.font = '400 24px "Noto Sans SC",sans-serif';
+            ctx.fillStyle = 'rgba(180,225,255,.85)';
+            ctx.shadowBlur = 10;
+            ctx.fillText('天 蝎 座', 270, 86);
+            const tex = new THREE.CanvasTexture(c);
+            const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+                map: tex, transparent: true, opacity: 0,
+                blending: THREE.AdditiveBlending, depthWrite: false
+            }));
+            sp.scale.set(4.5, 1.12, 1);
+            sp.position.set(5.5, 5.5, -1.1);
+            return sp;
+        }
+
+        // 天蝎座原始星点坐标 → 缩放铺满全屏后的目标坐标
+        function scorpiusTargets() {
+            // 原始坐标中心约 (-0.085, 3.595)，缩放 2.5 倍并居中到原点
+            const SX = 2.5, XC = -0.085, SY = 2.5, YC = 3.595, Z = -1.1;
+            const raw = [
+                [-1.86, 5.36], [-2.37, 5.50], [-2.60, 5.05], [-2.66, 4.49],
+                [-1.62, 4.57], [-1.21, 4.45], [-0.91, 4.16], [-0.08, 3.18],
+                [-0.11, 2.59], [-0.02, 1.89], [0.82, 1.76], [2.00, 1.79],
+                [2.49, 2.25], [2.25, 2.43], [1.83, 2.73], [1.69, 2.70]
+            ];
+            return raw.map(s => [(s[0] - XC) * SX, (s[1] - YC) * SY, Z]);
+        }
+
+        // 创建天蝎座（暗星从屏幕外汇聚 → 连线逐段点亮）
+        function createConstellation() {
+            const Z = -1.1;
+            const BLUE = [0.45, 0.78, 1.0];
+            const BRIGHT = [0.72, 0.9, 1.0];
+            const ANTARES = [1.0, 0.62, 0.32];
+            // [尺寸, 颜色]，顺序对应 scorpiusTargets 的 16 颗星
+            const STAR_META = [
+                [0.80, BLUE], [1.05, BRIGHT], [1.10, BRIGHT], [0.85, BLUE],
+                [0.95, BLUE], [1.55, ANTARES], [0.80, BLUE], [1.00, BRIGHT],
+                [0.85, BLUE], [0.90, BLUE], [0.85, BLUE], [1.05, BRIGHT],
+                [0.95, BLUE], [0.85, BLUE], [1.30, BRIGHT], [0.85, BLUE]
+            ];
+            const EDGES = [
+                [0, 1], [1, 2], [2, 3], [3, 4], [4, 1],
+                [4, 5], [5, 6], [6, 7], [7, 8], [8, 9], [9, 10],
+                [10, 11], [11, 12], [12, 13], [13, 14], [14, 15]
+            ];
+
+            const targets = scorpiusTargets();
+            const n = targets.length;
+            // 汇聚起点：每颗星从屏幕外汇入目标位置
+            const starStarts = new Float32Array(n * 3);
+            const starCol = new Float32Array(n * 3);
+            const starSize = new Float32Array(n);
+            const starPhase = new Float32Array(n);
+            for (let i = 0; i < n; i++) {
+                const ang = Math.random() * Math.PI * 2;
+                const dist = 8 + Math.random() * 6;
+                starStarts[i * 3] = targets[i][0] + Math.cos(ang) * dist;
+                starStarts[i * 3 + 1] = targets[i][1] + Math.sin(ang) * dist * 0.7;
+                starStarts[i * 3 + 2] = Z + (Math.random() - 0.5) * 3;
+                starCol[i * 3] = STAR_META[i][1][0];
+                starCol[i * 3 + 1] = STAR_META[i][1][1];
+                starCol[i * 3 + 2] = STAR_META[i][1][2];
+                starSize[i] = STAR_META[i][0];
+                starPhase[i] = Math.random() * Math.PI * 2;
+            }
+            // 初始 position = 汇聚起点（从远处飞入）
+            const posAttr = new THREE.BufferAttribute(new Float32Array(starStarts), 3);
+            const sGeo = new THREE.BufferGeometry();
+            sGeo.setAttribute('position', posAttr);
+            sGeo.setAttribute('color', new THREE.BufferAttribute(starCol, 3));
+            sGeo.setAttribute('aSize', new THREE.BufferAttribute(starSize, 1));
+            sGeo.setAttribute('aPhase', new THREE.BufferAttribute(starPhase, 1));
+            const uni = {
+                uTime: { value: 0 },
+                uMap: { value: glowTex },
+                uOpacity: { value: 0 },
+                uBoost: { value: 0 },
+                uHeightScale: { value: 100 }
+            };
+            const sMat = new THREE.ShaderMaterial({
+                uniforms: uni,
+                transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+                vertexShader: `
+                    uniform float uTime, uOpacity, uBoost, uHeightScale;
+                    attribute float aSize, aPhase;
+                    attribute vec3 color;
+                    varying float vTw;
+                    varying vec3 vColor;
+                    void main(){
+                        vColor = color;
+                        float tw = 0.78 + 0.22 * sin(uTime * 2.1 + aPhase);
+                        vTw = tw;
+                        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+                        gl_PointSize = aSize * uHeightScale / max(-mv.z, 0.1)
+                                     * (0.9 + 0.25 * tw) * (1.0 + uBoost * 0.45);
+                        gl_Position = projectionMatrix * mv;
+                    }
+                `,
+                fragmentShader: `
+                    uniform sampler2D uMap;
+                    uniform float uOpacity, uBoost;
+                    varying float vTw;
+                    varying vec3 vColor;
+                    void main(){
+                        vec4 tex = texture2D(uMap, gl_PointCoord);
+                        if (tex.a < 0.02) discard;
+                        float gain = (0.55 + 0.45 * vTw) * (0.55 + uBoost * 0.7);
+                        gl_FragColor = vec4(vColor * gain, tex.a * uOpacity);
+                    }
+                `
+            });
+            const stars = new THREE.Points(sGeo, sMat);
+            fxGroup.add(stars);
+
+            // 连线位置 = 目标位置，用 drawRange 控制逐段显现
+            const linePos = [];
+            EDGES.forEach(([a, b]) => {
+                linePos.push(targets[a][0], targets[a][1], Z, targets[b][0], targets[b][1], Z);
+            });
+            const lGeo = new THREE.BufferGeometry();
+            lGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(linePos), 3));
+            const lMat = new THREE.LineBasicMaterial({
+                color: 0x8fe8ff, transparent: true, opacity: 0,
+                blending: THREE.AdditiveBlending, depthWrite: false
+            });
+            const lines = new THREE.LineSegments(lGeo, lMat);
+            fxGroup.add(lines);
+
+            const label = makeScorpiusLabel();
+            fxGroup.add(label);
+
+            // 将目标坐标展平为 Float32Array 便于逐帧插值
+            const targetFlat = new Float32Array(n * 3);
+            for (let i = 0; i < n; i++) {
+                targetFlat[i * 3] = targets[i][0];
+                targetFlat[i * 3 + 1] = targets[i][1];
+                targetFlat[i * 3 + 2] = targets[i][2];
+            }
+            constellation = {
+                stars, lines, label, uni, posAttr,
+                starts: starStarts, targets: targetFlat,
+                conv: 0, convDone: false,
+                lit: false, progress: 0,
+                totalVerts: EDGES.length * 2,
+                delay: 1.0   // 进入界面后约 1 秒自动开始汇聚
+            };
+            resizeUniList.push(uni);
+        }
+
+        // 触发星座汇聚 + 点亮（按钮可再次触发，重置整条动画）
+        function lightConstellation() {
+            if (!constellation) return;
+            // 重置：星点回到屏幕外起点，重新汇聚 + 连线
+            constellation.conv = 0;
+            constellation.convDone = false;
+            constellation.lit = false;
+            constellation.progress = 0;
+            constellation.delay = 0; // 按钮再触发：立即开始，不等待延迟
+            constellation.uni.uOpacity.value = 0;
+            constellation.uni.uBoost.value = 0;
+            constellation.lines.material.opacity = 0;
+            constellation.lines.geometry.setDrawRange(0, 0);
+            constellation.label.material.opacity = 0;
+            // 把 position 重置为汇聚起点
+            const arr = constellation.posAttr.array;
+            for (let i = 0; i < arr.length; i++) arr[i] = constellation.starts[i];
+            constellation.posAttr.needsUpdate = true;
+            tone(880, .15, 'sine', .04);
+            tone(1320, .25, 'sine', .035, .12);
+            showToast('天蝎座 ♏ 星辰汇聚中');
+        }
+
+        // 每帧推进天蝎座：先汇聚（星点从屏幕外飞向目标），再连线逐段点亮
+        function updateConstellation(dt, t) {
+            if (!constellation) return;
+            constellation.uni.uTime.value = t;
+
+            // 阶段一：延迟等待
+            if (constellation.delay > 0) {
+                constellation.delay -= dt;
+                return;
+            }
+
+            // 阶段二：星点从屏幕外汇聚到目标位置
+            if (constellation.conv < 1) {
+                constellation.conv = Math.min(1, constellation.conv + dt / 1.8);
+                const ease = 1 - Math.pow(1 - constellation.conv, 3); // easeOutCubic
+                const arr = constellation.posAttr.array;
+                for (let i = 0; i < arr.length; i++) {
+                    arr[i] = constellation.starts[i] + (constellation.targets[i] - constellation.starts[i]) * ease;
+                }
+                constellation.posAttr.needsUpdate = true;
+                // 汇聚过程中星点渐显
+                constellation.uni.uOpacity.value = 0.3 * constellation.conv;
+                if (constellation.conv >= 1) {
+                    constellation.convDone = true;
+                    constellation.lit = true; // 汇聚完成后自动进入点亮阶段
+                }
+                return;
+            }
+
+            // 阶段三：连线逐段点亮 + 星点增辉 + 标签渐显
+            if (!constellation.lit) return;
+            constellation.progress = Math.min(1, constellation.progress + dt / 2.6);
+            const p = constellation.progress;
+            constellation.lines.material.opacity = 0.85 * p;
+            constellation.lines.geometry.setDrawRange(0, Math.floor(p * constellation.totalVerts));
+            constellation.uni.uOpacity.value = 0.3 + 0.3 * p;
+            constellation.uni.uBoost.value = 0.5 * p;
+            constellation.label.material.opacity = 0.9 * p;
+        }
+
+        /* ============================================================
+         * 点击恒星：粒子爆发 + 自动开启全息广播
+         * ==========================================================*/
+
+        // 创建可回收的粒子爆发池
+        function createBurstSystem() {
+            const N = 260;
+            const pos = new Float32Array(N * 3);
+            const vel = new Float32Array(N * 3);
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+            const mat = new THREE.PointsMaterial({
+                size: .16, map: glowTex, color: 0xbfe9ff, transparent: true, opacity: 0,
+                blending: THREE.AdditiveBlending, depthWrite: false
+            });
+            const points = new THREE.Points(geo, mat);
+            fxGroup.add(points);
+            burstSys = { points, geo, vel, life: 0, N };
+        }
+
+        // 从指定位置发射一次粒子爆发
+        function burstAt(origin) {
+            const arr = burstSys.geo.attributes.position.array;
+            for (let i = 0; i < burstSys.N; i++) {
+                arr[i * 3] = origin.x; arr[i * 3 + 1] = origin.y; arr[i * 3 + 2] = origin.z;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(Math.random() * 2 - 1);
+                const sp = 2.5 + Math.random() * 4.5;
+                burstSys.vel[i * 3] = sp * Math.sin(phi) * Math.cos(theta);
+                burstSys.vel[i * 3 + 1] = sp * Math.sin(phi) * Math.sin(theta);
+                burstSys.vel[i * 3 + 2] = sp * Math.cos(phi) * 0.5;
+            }
+            burstSys.geo.attributes.position.needsUpdate = true;
+            burstSys.life = 1;
+        }
+
+        // 每帧更新爆发粒子运动与衰减
+        function updateBurst(dt) {
+            if (burstSys.life <= 0) return;
+            burstSys.life = Math.max(0, burstSys.life - dt / 1.4);
+            const arr = burstSys.geo.attributes.position.array;
+            for (let i = 0; i < burstSys.N; i++) {
+                arr[i * 3] += burstSys.vel[i * 3] * dt;
+                arr[i * 3 + 1] += burstSys.vel[i * 3 + 1] * dt;
+                arr[i * 3 + 2] += burstSys.vel[i * 3 + 2] * dt;
+                burstSys.vel[i * 3] *= .96; burstSys.vel[i * 3 + 1] *= .96; burstSys.vel[i * 3 + 2] *= .96;
+            }
+            burstSys.geo.attributes.position.needsUpdate = true;
+            burstSys.points.material.opacity = burstSys.life;
+        }
+
+        /* ============================================================
+         * 曲速探索：星野高速流动 + 星线拉伸 + FOV 冲击 + 闪光
+         * ==========================================================*/
+
+        // 启动曲速航行
+        function startWarp() {
+            if (warp.active) return;
+            warp.active = true; warp.t = 0;
+            warpSweep();
+            showToast('曲速引擎启动 · 正在穿越星门');
+        }
+
+        // 每帧推进曲速包络（0→1→0 的正弦曲线）
+        function updateWarp(dt) {
+            const flash = document.getElementById('warpFlash');
+            if (warp.active) {
+                warp.t += dt;
+                const p = warp.t / warp.dur;
+                if (p >= 1) {
+                    warp.active = false; warp.env = 0;
+                    flash.style.opacity = 0;
+                    camera.fov = 60; camera.updateProjectionMatrix();
+                    showToast('已抵达 · 丁睿生日星系 · ' + BIRTHDAY.date);
+                    tone(660, .3, 'sine', .04); tone(990, .4, 'sine', .035, .15);
+                    return;
+                }
+                warp.env = Math.sin(p * Math.PI);
+            } else {
+                warp.env *= 0.92;
+            }
+            // FOV 冲击营造加速感
+            camera.fov = 60 + warp.env * 26;
+            camera.updateProjectionMatrix();
+            flash.style.opacity = (warp.env * warp.env * 0.55).toFixed(3);
+        }
+
+        /* ============================================================
+         * 全息投影：星际广播打字机
+         * ==========================================================*/
+        let broadcastToken = 0;
+
+        // 打开全息面板并逐段播送祝福语
+        async function startBroadcast() {
+            ensureAudio();
+            const holo = document.getElementById('holo');
+            const body = document.getElementById('holoBody');
+            const token = ++broadcastToken;
+            holo.classList.add('show');
+            body.innerHTML = '';
+            tone(520, .18, 'sine', .04); tone(780, .25, 'sine', .035, .15);
+
+            for (let mi = 0; mi < MESSAGES.length; mi++) {
+                if (token !== broadcastToken) return;
+                // 每段祝福独立的段落 + 打字光标
+                const p = document.createElement('p');
+                const target = document.createElement('span');
+                const caret = document.createElement('span');
+                caret.className = 'caret';
+                p.appendChild(target);
+                p.appendChild(caret);
+                body.appendChild(p);
+                p.classList.add('on'); // 立即可见，边打字边显示
+                // 逐字输出（HTML 标签整体跳过，保证 <span> 样式生效）
+                const html = MESSAGES[mi];
+                let out = '';
+                for (let i = 0; i < html.length; i++) {
+                    if (token !== broadcastToken) return;
+                    if (html[i] === '<') { const end = html.indexOf('>', i); out += html.slice(i, end + 1); i = end; }
+                    else out += html[i];
+                    target.innerHTML = out;
+                    if (html[i] !== ' ' && i % 3 === 0) tone(1100 + Math.random() * 300, .03, 'square', .008);
+                    await sleep(26 + Math.random() * 26);
+                }
+                caret.remove();
+                await sleep(420);
+            }
+            if (token !== broadcastToken) return;
+            const sig = document.createElement('p');
+            sig.className = 'sig on';
+            sig.textContent = SIGNATURE;
+            body.appendChild(sig);
+            tone(880, .4, 'sine', .035);
+        }
+
+        // 工具：延时 Promise
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        /* ============================================================
+         * Toast 提示
+         * ==========================================================*/
+        let toastTimer = null;
+
+        // 显示一条顶部悬浮提示
+        function showToast(text) {
+            const el = document.getElementById('toast');
+            el.textContent = text;
+            el.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+        }
+
+        /* ============================================================
+         * 交互绑定：拖拽旋转 / 滚轮缩放 / 点击恒星 / 按钮
+         * ==========================================================*/
+
+        // 绑定全部鼠标与触摸交互
+        function bindInteractions() {
+            const canvas = renderer.domElement;
+
+            // 按下：记录拖拽起点
+            canvas.addEventListener('pointerdown', e => {
+                ensureAudio();
+                dragState.down = true; dragState.moved = 0;
+                dragState.x = e.clientX; dragState.y = e.clientY;
+            });
+
+            // 移动：拖拽旋转 worldGroup，同时记录归一化指针用于视差
+            window.addEventListener('pointermove', e => {
+                pointer.x = (e.clientX / innerWidth) * 2 - 1;
+                pointer.y = -(e.clientY / innerHeight) * 2 + 1;
+                if (!dragState.down) return;
+                const dx = e.clientX - dragState.x, dy = e.clientY - dragState.y;
+                dragState.moved += Math.abs(dx) + Math.abs(dy);
+                worldGroup.rotation.y += dx * 0.005;
+                worldGroup.rotation.x += dy * 0.005;
+                worldGroup.rotation.x = Math.max(-0.9, Math.min(0.9, worldGroup.rotation.x));
+                dragState.x = e.clientX; dragState.y = e.clientY;
+            });
+
+            // 抬起：若几乎未移动则视为点击 → 射线检测中央恒星
+            window.addEventListener('pointerup', e => {
+                if (dragState.down && dragState.moved < 8) {
+                    const ndc = new THREE.Vector2(
+                        (e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1
+                    );
+                    raycaster.setFromCamera(ndc, camera);
+                    const hit = raycaster.intersectObject(starSphere, false);
+                    if (hit.length) {
+                        // 恒星坐标转到 fxGroup 空间爆发
+                        const local = fxGroup.worldToLocal(starSphere.getWorldPosition(new THREE.Vector3()));
+                        burstAt(local);
+                        tone(523, .12, 'sine', .04); tone(784, .2, 'sine', .04, .1);
+                        if (!document.getElementById('holo').classList.contains('show')) {
+                            setTimeout(startBroadcast, 350);
+                        }
+                    }
+                }
+                dragState.down = false;
+            });
+
+            // 滚轮缩放相机距离
+            canvas.addEventListener('wheel', e => {
+                e.preventDefault();
+                camera.position.z = THREE.MathUtils.clamp(
+                    camera.position.z + e.deltaY * 0.008, 6.5, 20
+                );
+            }, { passive: false });
+
+            // 按钮：点亮星座
+            document.getElementById('btnConstellation').addEventListener('click', () => {
+                ensureAudio(); lightConstellation();
+            });
+            // 按钮：曲速探索
+            document.getElementById('btnWarp').addEventListener('click', () => {
+                ensureAudio(); startWarp();
+            });
+            // 按钮：星际广播
+            document.getElementById('btnBroadcast').addEventListener('click', () => {
+                startBroadcast();
+            });
+            // 关闭全息面板
+            document.getElementById('holoClose').addEventListener('click', () => {
+                broadcastToken++;
+                document.getElementById('holo').classList.remove('show');
+            });
+            // 星盘转速滑块
+            document.getElementById('speedRange').addEventListener('input', e => {
+                autoSpeed = (e.target.value / 100) * 0.0035 * 60;
+            });
+        }
+
+        /* ============================================================
+         * 主循环
+         * ==========================================================*/
+
+        // 每帧更新所有动态元素并渲染
+        function animate() {
+            requestAnimationFrame(animate);
+            const dt = Math.min(clock.getDelta(), 0.05);
+            const t = clock.elapsedTime;
+
+            // 星盘自动旋转（曲速时加速）
+            const spinBoost = 1 + warp.env * 3.5;
+            worldGroup.rotation.y += autoSpeed * dt / 60 * spinBoost;
+
+            // 中央恒星系统：等离子表面时间推进 + 球体自转
+            starSphere.material.uniforms.uTime.value = t;
+            starSphere.rotation.y += dt * 0.15;
+            wireShell.rotation.y -= dt * 0.22;
+            wireShell.rotation.x += dt * 0.12;
+            centralGroup.userData.shell2.rotation.y += dt * 0.3;
+            centralGroup.userData.shell2.rotation.z -= dt * 0.18;
+            particleRing.rotation.z += dt * 0.4;
+            // 日珥 / 太阳风着色器时间
+            coronaUniList.forEach(u => { u.uTime.value = t; });
+            // 外层辉光呼吸 + 日冕弧环涨落
+            const glow = centralGroup.userData.glow;
+            glow.scale.setScalar(4.2 + Math.sin(t * 1.6) * 0.25);
+            glow.material.opacity = 0.2 + Math.sin(t * 1.6) * 0.05;
+            centralGroup.userData.coronaRings.forEach((ring, i) => {
+                ring.material.opacity = 0.22 + 0.16 * (0.5 + 0.5 * Math.sin(t * 0.9 + i * 2.1));
+                ring.rotation.z += dt * (i === 0 ? 0.25 : -0.18);
+            });
+            planets.forEach(p => {
+                p.angle += p.speed * dt * 0.5;
+                p.mesh.position.set(Math.cos(p.angle) * p.r, 0, Math.sin(p.angle) * p.r);
+            });
+
+            // 星云缓慢自转
+            worldGroup.children.forEach(ch => {
+                if (ch.isSprite && ch.material && ch.userData.rot) ch.material.rotation += ch.userData.rot * dt;
+            });
+
+            // 星野 / 曲速 / 星尘 / 星座 / 爆发
+            starFieldUni.uTime.value = t;
+            updateStarField(dt);
+            updateWarp(dt);
+            updateWarpStreaks(dt);
+            updateNameDust(dt);
+            updateConstellation(dt, t);
+            updateBurst(dt);
+
+            // 名字汇聚完成后的呼吸光效
+            if (nameDust && nameDust.done) {
+                nameDust.halo.material.opacity = 0.22 + Math.sin(t * 1.7) * 0.05;
+                nameDust.backlight.material.opacity = 0.11 + Math.sin(t * 1.3) * 0.03;
+            }
+
+            // fxGroup 鼠标视差（名字与星座轻微跟随）+ 整体轻柔浮动
+            fxGroup.rotation.y += (pointer.x * 0.12 - fxGroup.rotation.y) * 0.04;
+            fxGroup.rotation.x += (-pointer.y * 0.1 - fxGroup.rotation.x) * 0.04;
+            fxGroup.position.y = Math.sin(t * 0.7) * 0.12;
+
+            composer.render();
+        }
+
+        /* ============================================================
+         * 启动
+         * ==========================================================*/
+
+        // 构建整个宇宙场景并开始渲染
+        function init() {
+            glowTex = makeGlowTexture();
+            initRenderer();
+
+            worldGroup = new THREE.Group();
+            fxGroup = new THREE.Group();
+            scene.add(worldGroup);
+            scene.add(fxGroup);
+
+            createNebulas();
+            createStarField();
+            createWarpStreaks();
+            createCentralStar();
+            createNameDust();
+            createConstellation();
+            createBurstSystem();
+
+            bindInteractions();
+            onResize(); // 初始化时应用一次响应式缩放
+            animate();
+
+            // 加载层淡出
+            setTimeout(() => document.getElementById('loading').classList.add('hide'), 700);
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
