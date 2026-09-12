@@ -274,6 +274,56 @@
             transform: translateY(0) scale(.97);
         }
 
+        /* ============ 更多祝福界面入口（sky / wish 跳转） ============ */
+        .more-entries {
+            position: fixed;
+            z-index: 30;
+            left: 50%;
+            bottom: 118px;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 14px;
+            pointer-events: none;
+        }
+
+        .entry-btn {
+            pointer-events: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 11px 20px;
+            text-decoration: none;
+            font-family: "Orbitron", "Noto Sans SC", sans-serif;
+            font-size: 12.5px;
+            letter-spacing: .12em;
+            color: var(--gold);
+            background: linear-gradient(160deg, rgba(50, 38, 12, .5), rgba(10, 14, 34, .6));
+            border: 1px solid rgba(255, 211, 127, .42);
+            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+            transition: all .22s ease;
+            white-space: nowrap;
+            text-shadow: 0 0 8px rgba(255, 211, 127, .35);
+        }
+
+        .entry-btn span {
+            font-family: "Noto Sans SC", sans-serif;
+            font-size: 10.5px;
+            letter-spacing: .1em;
+            color: rgba(190, 220, 255, .75);
+            text-shadow: none;
+        }
+
+        .entry-btn:hover {
+            background: rgba(60, 140, 230, .3);
+            border-color: var(--cyan);
+            box-shadow: 0 0 18px rgba(111, 227, 255, .45);
+            transform: translateY(-2px);
+        }
+
+        .entry-btn:active {
+            transform: translateY(0) scale(.97);
+        }
+
         .speed-box {
             display: flex;
             align-items: center;
@@ -555,6 +605,24 @@
                 bottom: 16px;
             }
 
+            .more-entries {
+                bottom: 96px;
+                gap: 8px;
+                flex-wrap: wrap;
+                justify-content: center;
+                max-width: 92vw;
+            }
+
+            .entry-btn {
+                font-size: 11px;
+                padding: 8px 12px;
+                letter-spacing: .06em;
+            }
+
+            .entry-btn span {
+                font-size: 9.5px;
+            }
+
             .btn {
                 font-size: 11px;
                 padding: 9px 12px;
@@ -620,6 +688,12 @@
             <label>星盘转速</label>
             <input type="range" id="speedRange" min="0" max="100" value="35" />
         </div>
+    </div>
+
+    <!-- 更多祝福界面入口 -->
+    <div class="more-entries">
+        <a class="entry-btn" href="sky.html">✈ 天空没有极限<span>冲破云层的飞行祝福</span></a>
+        <a class="entry-btn" href="wish.html">☄ 星愿信箱<span>发射星愿 · 低谷急救站</span></a>
     </div>
 
     <!-- 全息祝福投影 -->
