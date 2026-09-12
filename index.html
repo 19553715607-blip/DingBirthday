@@ -590,6 +590,14 @@
     <div class="corner c-bl"></div>
     <div class="corner c-br"></div>
 
+    <!-- 动态导航 -->
+    <nav class="nav">
+        <span class="nav-logo"><span class="star">✦</span>DR·1025</span>
+        <a href="index.html" class="active">星空主页</a>
+        <a href="sky.html">天空没有极限</a>
+        <a href="wish.html">星愿信箱</a>
+    </nav>
+
     <!-- 顶部 HUD -->
     <div class="hud hud-tl">
         <div class="hud-title">STELLAR BIRTHDAY TRANSMISSION</div>
@@ -683,7 +691,7 @@
         let nameDust = null;                 // 「丁睿」星尘粒子
         let constellation = null;            // 星座连线
         let burstSys = null;                 // 点击恒星的粒子爆发
-        let glowTex, nebulaTex = [];
+        let glowTex, pointTex, nebulaTex = [];
 
         const clock = new THREE.Clock();
         const pointer = new THREE.Vector2(0, 0);
@@ -750,6 +758,20 @@
             grad.addColorStop(0.55, 'rgba(110,180,255,.28)');
             grad.addColorStop(1, 'rgba(0,60,180,0)');
             g.fillStyle = grad; g.fillRect(0, 0, 128, 128);
+            return new THREE.CanvasTexture(c);
+        }
+
+        // 生成锐利光点纹理（紧凑亮核 + 极窄羽化），用于名字粒子以保证笔画清晰
+        function makePointTexture() {
+            const c = document.createElement('canvas'); c.width = c.height = 64;
+            const g = c.getContext('2d');
+            const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+            grad.addColorStop(0, 'rgba(255,255,255,1)');
+            grad.addColorStop(0.35, 'rgba(255,255,255,.95)');
+            grad.addColorStop(0.55, 'rgba(255,255,255,.28)');
+            grad.addColorStop(0.75, 'rgba(255,255,255,.04)');
+            grad.addColorStop(1, 'rgba(255,255,255,0)');
+            g.fillStyle = grad; g.fillRect(0, 0, 64, 64);
             return new THREE.CanvasTexture(c);
         }
 
@@ -941,7 +963,7 @@
             // Bloom 泛光：让恒星、星点、连线产生辉光
             composer = new EffectComposer(renderer);
             composer.addPass(new RenderPass(scene, camera));
-            bloomPass = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.7, 0.5, 0.2);
+            bloomPass = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.5, 0.4, 0.28);
             composer.addPass(bloomPass);
             composer.addPass(new OutputPass());
 
@@ -967,13 +989,17 @@
             const sizes = new Float32Array(COUNT);
             const phases = new Float32Array(COUNT);
             const speeds = new Float32Array(COUNT);
-            // 蓝白主调 + 少量纯白与淡金亮星，形成色彩层次
+            // 多彩星野：蓝白基底 + 青/紫/粉/金等彩色恒星点缀
             const palette = [
-                { c: new THREE.Color(0xbfe0ff), w: 0.42 },
-                { c: new THREE.Color(0x7fc4ff), w: 0.26 },
-                { c: new THREE.Color(0xd9e8ff), w: 0.20 },
-                { c: new THREE.Color(0xffffff), w: 0.08 },
-                { c: new THREE.Color(0xffd9a8), w: 0.04 }
+                { c: new THREE.Color(0xbfe0ff), w: 0.30 }, // 淡蓝
+                { c: new THREE.Color(0x7fc4ff), w: 0.16 }, // 宇宙蓝
+                { c: new THREE.Color(0xd9e8ff), w: 0.12 }, // 银白
+                { c: new THREE.Color(0xffffff), w: 0.08 }, // 纯白
+                { c: new THREE.Color(0x8ff2e8), w: 0.08 }, // 青绿
+                { c: new THREE.Color(0xb8a6ff), w: 0.09 }, // 紫罗兰
+                { c: new THREE.Color(0xff9fd0), w: 0.07 }, // 星云粉
+                { c: new THREE.Color(0xffd9a8), w: 0.06 }, // 暖金
+                { c: new THREE.Color(0xa8ff9f), w: 0.04 }  // 荧绿
             ];
             for (let i = 0; i < COUNT; i++) {
                 pos[i * 3] = (Math.random() - 0.5) * 130;
@@ -982,7 +1008,7 @@
                 // 按权重挑选颜色
                 const roll = Math.random(); let acc = 0, chosen = palette[0];
                 for (const item of palette) { acc += item.w; if (roll <= acc) { chosen = item; break; } }
-                const b = 0.35 + Math.random() * 0.65;
+                const b = 0.28 + Math.random() * 0.55;
                 col[i * 3] = chosen.c.r * b; col[i * 3 + 1] = chosen.c.g * b; col[i * 3 + 2] = chosen.c.b * b;
                 // 尺寸分级：70% 微尘星 / 25% 中星 / 5% 明亮导航星
                 const sr = Math.random();
@@ -1265,9 +1291,9 @@
         function createNameDust() {
             const cv = document.createElement('canvas');
             const ctx = cv.getContext('2d');
-            ctx.font = '700 230px "Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif';
+            ctx.font = '400 230px "Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif';
             const nameW = ctx.measureText(BIRTHDAY.name).width;
-            ctx.font = '600 62px Orbitron, sans-serif';
+            ctx.font = '400 62px Orbitron, sans-serif';
             const subW = 62 * 8.2; // HAPPY BIRTHDAY 近似宽度
             const W = Math.ceil(Math.max(nameW, subW)) + 80;
             const H = 400;
@@ -1275,9 +1301,9 @@
 
             ctx.fillStyle = '#fff';
             ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            ctx.font = '700 230px "Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif';
+            ctx.font = '400 230px "Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif';
             ctx.fillText(BIRTHDAY.name, W / 2, H * 0.38);
-            ctx.font = '600 58px Orbitron, sans-serif';
+            ctx.font = '400 58px Orbitron, sans-serif';
             ctx.fillText('HAPPY BIRTHDAY', W / 2, H * 0.74);
             ctx.font = '400 30px Orbitron, sans-serif';
             ctx.fillText('★  10 · 25  ★', W / 2, H * 0.9);
@@ -1285,18 +1311,19 @@
             const data = ctx.getImageData(0, 0, W, H).data;
             const targets = [], starts = [], colors = [], haloColors = [];
             const SCALE = 118;
-            const cTop = new THREE.Color(0x8fd6ff);
-            const cMid = new THREE.Color(0xf4f9ff);
-            const cBot = new THREE.Color(0x7fb8ff);
-            const cHalo = new THREE.Color(0x6fc8ff);
+            // 名字专属配色：暖金 → 珍珠白 → 紫罗兰，与蓝色星野形成对比
+            const cTop = new THREE.Color(0xffd37f);
+            const cMid = new THREE.Color(0xfff6e8);
+            const cBot = new THREE.Color(0xc9a7ff);
+            const cHalo = new THREE.Color(0xffc47a);
 
-            // 采样步长 3px：更密的星尘让笔画饱满醒目
-            for (let y = 0; y < H; y += 3) {
-                for (let x = 0; x < W; x += 3) {
+            // 采样步长 2px：细密星尘 + 锐利光点，保证笔画边缘清晰
+            for (let y = 0; y < H; y += 2) {
+                for (let x = 0; x < W; x += 2) {
                     if (data[(y * W + x) * 4 + 3] > 128) {
                         const tx = (x - W / 2) / SCALE;
                         const ty = -(y - H / 2) / SCALE + 0.2;
-                        const tz = (Math.random() - 0.5) * 0.5;
+                        const tz = (Math.random() - 0.5) * 0.08;
                         targets.push(tx, ty, tz);
                         // 起点：从名字附近的星辰汇聚而成（近距离散乱分布）
                         const theta = Math.random() * Math.PI * 2, phi = Math.acos(Math.random() * 2 - 1);
@@ -1311,7 +1338,7 @@
                         const c = mix < .5
                             ? cTop.clone().lerp(cMid, mix * 2)
                             : cMid.clone().lerp(cBot, (mix - .5) * 2);
-                        const jitter = 1.0 + Math.random() * 0.32;
+                        const jitter = 0.9 + Math.random() * 0.15;
                         colors.push(c.r * jitter, c.g * jitter, c.b * jitter);
                         // 光晕层：统一青蓝色柔光
                         const hk = 0.55 + Math.random() * 0.3;
@@ -1326,26 +1353,26 @@
             geo.setAttribute('position', posAttr);
             geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
             const mat = new THREE.PointsMaterial({
-                size: .095, map: glowTex, vertexColors: true, transparent: true, opacity: 0,
+                size: .042, map: pointTex, vertexColors: true, transparent: true, opacity: 0,
                 blending: THREE.AdditiveBlending, depthWrite: false
             });
             const points = new THREE.Points(geo, mat);
             fxGroup.add(points);
 
-            // 大尺寸低透明度的光晕层：为每个文字粒子裹上柔和光晕
+            // 小尺寸极低透明度的微光层：仅添星尘气息，不干扰笔画清晰度
             const haloGeo = new THREE.BufferGeometry();
             haloGeo.setAttribute('position', posAttr);
             haloGeo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(haloColors), 3));
             const haloMat = new THREE.PointsMaterial({
-                size: .22, map: glowTex, vertexColors: true, transparent: true, opacity: 0,
+                size: .1, map: glowTex, vertexColors: true, transparent: true, opacity: 0,
                 blending: THREE.AdditiveBlending, depthWrite: false
             });
             const halo = new THREE.Points(haloGeo, haloMat);
             fxGroup.add(halo);
 
-            // 名字背后的淡蓝背光，进一步强化可读性
+            // 名字背后的淡紫背光，进一步强化可读性
             const backMat = new THREE.SpriteMaterial({
-                map: glowTex, color: 0x2f7fd8, transparent: true, opacity: 0,
+                map: glowTex, color: 0x8a5fd8, transparent: true, opacity: 0,
                 blending: THREE.AdditiveBlending, depthWrite: false
             });
             const backlight = new THREE.Sprite(backMat);
@@ -1378,9 +1405,9 @@
                 arr[i] = nameDust.starts[i] + (nameDust.targets[i] - nameDust.starts[i]) * ease;
             }
             nameDust.posAttr.needsUpdate = true; // 主层与光晕层共享属性，一次更新
-            nameDust.points.material.opacity = Math.min(0.7, p * 1.0);
-            nameDust.halo.material.opacity = Math.min(0.12, p * 0.18);
-            nameDust.backlight.material.opacity = Math.min(0.08, p * 0.12);
+            nameDust.points.material.opacity = Math.min(0.92, p * 1.2);
+            nameDust.halo.material.opacity = Math.min(0.05, p * 0.08);
+            nameDust.backlight.material.opacity = Math.min(0.04, p * 0.06);
             if (p >= 1) { nameDust.done = true; nameAssembled = true; }
         }
 
@@ -1397,7 +1424,7 @@
             ctx.fillStyle = '#aef0ff';
             ctx.font = '64px "Noto Sans SC","Segoe UI Symbol",sans-serif';
             ctx.fillText('♏', 60, 62);
-            ctx.font = '600 34px Orbitron, sans-serif';
+            ctx.font = '400 34px Orbitron, sans-serif';
             ctx.fillText('SCORPIUS', 270, 48);
             ctx.font = '400 24px "Noto Sans SC",sans-serif';
             ctx.fillStyle = 'rgba(180,225,255,.85)';
@@ -1896,8 +1923,8 @@
 
             // 名字汇聚完成后的呼吸光效
             if (nameDust && nameDust.done) {
-                nameDust.halo.material.opacity = 0.22 + Math.sin(t * 1.7) * 0.05;
-                nameDust.backlight.material.opacity = 0.11 + Math.sin(t * 1.3) * 0.03;
+                nameDust.halo.material.opacity = 0.05 + Math.sin(t * 1.7) * 0.02;
+                nameDust.backlight.material.opacity = 0.04 + Math.sin(t * 1.3) * 0.015;
             }
 
             // fxGroup 鼠标视差（名字与星座轻微跟随）+ 整体轻柔浮动
@@ -1915,6 +1942,7 @@
         // 构建整个宇宙场景并开始渲染
         function init() {
             glowTex = makeGlowTexture();
+            pointTex = makePointTexture();
             initRenderer();
 
             worldGroup = new THREE.Group();

@@ -1,0 +1,272 @@
+/* ============================================================
+ * STELLAR BIRTHDAY · 共享设计系统
+ * 色彩：深邃宇宙蓝 + 科技银 + 破晓金紫（天空没有极限）
+ * 适用于 index.html / sky.html / wish.html
+ * ==========================================================*/
+
+:root {
+    --space-0: #02060f;
+    --space-1: #050d24;
+    --space-2: #0a142e;
+    --cyan: #6fe3ff;
+    --cyan-soft: #9fd8ff;
+    --silver: #dce9ff;
+    --silver-dim: #9db4d8;
+    --violet: #8f7bff;
+    --gold: #ffd37f;
+    --dawn-violet: #6b5bd6;
+    --dawn-gold: #ffb86b;
+    --line: rgba(120, 200, 255, .28);
+    --card-bg: rgba(10, 20, 46, .55);
+    --glow-cyan: 0 0 12px rgba(111, 227, 255, .55), 0 0 42px rgba(111, 227, 255, .22);
+    --glow-gold: 0 0 14px rgba(255, 211, 127, .5), 0 0 46px rgba(255, 184, 107, .2);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background: var(--space-0);
+}
+
+body {
+    font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif;
+    color: var(--silver);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* ============ 动态导航 ============ */
+.nav {
+    position: fixed;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(5, 13, 36, .62);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, .45);
+    animation: navIn .9s cubic-bezier(.22, 1, .36, 1) both;
+    white-space: nowrap;
+}
+
+@keyframes navIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(-18px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding-right: 12px;
+    margin-right: 4px;
+    border-right: 1px solid var(--line);
+    font-family: Orbitron, sans-serif;
+    font-size: 12px;
+    letter-spacing: .14em;
+    color: var(--cyan);
+}
+
+.nav-logo .star {
+    display: inline-block;
+    animation: starSpin 6s linear infinite;
+}
+
+@keyframes starSpin {
+    to { transform: rotate(360deg); }
+}
+
+.nav a {
+    position: relative;
+    padding: 7px 15px;
+    border-radius: 999px;
+    color: var(--silver-dim);
+    text-decoration: none;
+    font-size: 13.5px;
+    letter-spacing: .05em;
+    transition: color .3s, background .3s, transform .3s;
+}
+
+.nav a::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 3px;
+    width: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--violet));
+    transform: translateX(-50%);
+    transition: width .35s cubic-bezier(.22, 1, .36, 1);
+}
+
+.nav a:hover {
+    color: var(--silver);
+    background: rgba(111, 227, 255, .08);
+    transform: translateY(-1px);
+}
+
+.nav a:hover::after { width: 55%; }
+
+.nav a.active {
+    color: #04101f;
+    background: linear-gradient(135deg, var(--cyan), var(--violet));
+    font-weight: 500;
+    box-shadow: var(--glow-cyan);
+}
+
+.nav a.active::after { width: 0; }
+
+/* ============ 通用组件 ============ */
+.btn-x {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 26px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(10, 20, 46, .6);
+    color: var(--silver);
+    font-size: 14.5px;
+    letter-spacing: .08em;
+    cursor: pointer;
+    transition: transform .3s cubic-bezier(.22, 1, .36, 1), box-shadow .3s, border-color .3s, background .3s;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.btn-x:hover {
+    transform: translateY(-2px);
+    border-color: rgba(111, 227, 255, .6);
+    box-shadow: var(--glow-cyan);
+    background: rgba(16, 32, 70, .7);
+}
+
+.btn-x:active { transform: translateY(0) scale(.97); }
+
+.btn-x.gold {
+    border-color: rgba(255, 211, 127, .45);
+    color: var(--gold);
+}
+
+.btn-x.gold:hover {
+    border-color: rgba(255, 211, 127, .85);
+    box-shadow: var(--glow-gold);
+    background: rgba(60, 40, 10, .35);
+}
+
+.card {
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 14px 44px rgba(0, 0, 0, .4);
+    transition: transform .45s cubic-bezier(.22, 1, .36, 1), box-shadow .45s, border-color .45s;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(111, 227, 255, .5);
+    box-shadow: 0 22px 60px rgba(0, 0, 0, .5), var(--glow-cyan);
+}
+
+.glow-text {
+    background: linear-gradient(120deg, var(--cyan) 0%, var(--silver) 45%, var(--violet) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 18px rgba(111, 227, 255, .35));
+}
+
+.glow-text-gold {
+    background: linear-gradient(120deg, var(--gold) 0%, #fff3dd 50%, var(--dawn-gold) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 18px rgba(255, 211, 127, .3));
+}
+
+/* 入场微动画：分层浮现 */
+.fade-up { animation: fadeUp .9s cubic-bezier(.22, 1, .36, 1) both; }
+.fade-up.d1 { animation-delay: .12s; }
+.fade-up.d2 { animation-delay: .26s; }
+.fade-up.d3 { animation-delay: .42s; }
+.fade-up.d4 { animation-delay: .58s; }
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(26px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 信号点闪烁 */
+.signal-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background: #52ffa8;
+    box-shadow: 0 0 10px #52ffa8;
+    animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .35; transform: scale(.72); }
+}
+
+/* ============ Toast 提示 ============ */
+.toast-x {
+    position: fixed;
+    top: 84px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-14px);
+    z-index: 95;
+    padding: 12px 26px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 211, 127, .4);
+    background: rgba(40, 28, 8, .78);
+    color: var(--gold);
+    font-size: 14px;
+    letter-spacing: .06em;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .4s, transform .4s;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.toast-x.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ============ 响应式 ============ */
+@media (max-width: 720px) {
+    .nav {
+        top: 10px;
+        padding: 6px 10px;
+        max-width: calc(100vw - 16px);
+        overflow-x: auto;
+    }
+    .nav-logo { font-size: 10.5px; padding-right: 8px; }
+    .nav a { padding: 6px 10px; font-size: 12px; }
+}
+
+/* 尊重系统减弱动效设置 */
+@media (prefers-reduced-motion: reduce) {
+    .nav, .fade-up { animation-duration: .01s; animation-delay: 0s; }
+    .nav-logo .star, .signal-dot { animation: none; }
+    * { transition-duration: .01s !important; }
+}
