@@ -22,9 +22,14 @@
     --glow-gold: 0 0 14px rgba(255, 211, 127, .5), 0 0 46px rgba(255, 184, 107, .2);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-html, body {
+html,
+body {
     width: 100%;
     height: 100%;
     background: var(--space-0);
@@ -59,8 +64,15 @@ body {
 }
 
 @keyframes navIn {
-    from { opacity: 0; transform: translateX(-50%) translateY(-18px); }
-    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
 }
 
 .nav-logo {
@@ -82,7 +94,9 @@ body {
 }
 
 @keyframes starSpin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .nav a {
@@ -115,7 +129,9 @@ body {
     transform: translateY(-1px);
 }
 
-.nav a:hover::after { width: 55%; }
+.nav a:hover::after {
+    width: 55%;
+}
 
 .nav a.active {
     color: #04101f;
@@ -124,7 +140,9 @@ body {
     box-shadow: var(--glow-cyan);
 }
 
-.nav a.active::after { width: 0; }
+.nav a.active::after {
+    width: 0;
+}
 
 /* ============ 通用组件 ============ */
 .btn-x {
@@ -152,7 +170,9 @@ body {
     background: rgba(16, 32, 70, .7);
 }
 
-.btn-x:active { transform: translateY(0) scale(.97); }
+.btn-x:active {
+    transform: translateY(0) scale(.97);
+}
 
 .btn-x.gold {
     border-color: rgba(255, 211, 127, .45);
@@ -198,15 +218,36 @@ body {
 }
 
 /* 入场微动画：分层浮现 */
-.fade-up { animation: fadeUp .9s cubic-bezier(.22, 1, .36, 1) both; }
-.fade-up.d1 { animation-delay: .12s; }
-.fade-up.d2 { animation-delay: .26s; }
-.fade-up.d3 { animation-delay: .42s; }
-.fade-up.d4 { animation-delay: .58s; }
+.fade-up {
+    animation: fadeUp .9s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.fade-up.d1 {
+    animation-delay: .12s;
+}
+
+.fade-up.d2 {
+    animation-delay: .26s;
+}
+
+.fade-up.d3 {
+    animation-delay: .42s;
+}
+
+.fade-up.d4 {
+    animation-delay: .58s;
+}
 
 @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(26px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(26px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* 信号点闪烁 */
@@ -222,8 +263,17 @@ body {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: .35; transform: scale(.72); }
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: .35;
+        transform: scale(.72);
+    }
 }
 
 /* ============ Toast 提示 ============ */
@@ -260,13 +310,302 @@ body {
         max-width: calc(100vw - 16px);
         overflow-x: auto;
     }
-    .nav-logo { font-size: 10.5px; padding-right: 8px; }
-    .nav a { padding: 6px 10px; font-size: 12px; }
+
+    .nav-logo {
+        font-size: 10.5px;
+        padding-right: 8px;
+    }
+
+    .nav a {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+}
+
+/* ============ 背景音乐播放器（林俊杰 ·《当你》单曲循环） ============ */
+.music-fab {
+    position: fixed;
+    right: 22px;
+    bottom: 26px;
+    z-index: 80;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-family: "Noto Sans SC", sans-serif;
+}
+
+/* sky 页右下角已有快捷导航坞，音乐键上移避让 */
+.music-fab.on-sky {
+    bottom: 156px;
+}
+
+/* 悬停展开的音量 + 曲目面板 */
+.music-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    padding: 12px 12px 10px;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: rgba(5, 13, 36, .72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .45);
+    opacity: 0;
+    transform: translateY(10px) scale(.92);
+    transform-origin: bottom center;
+    pointer-events: none;
+    transition: opacity .3s, transform .3s;
+}
+
+.music-fab:hover .music-panel,
+.music-fab.locked .music-panel {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.music-panel .song {
+    font-size: 11px;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--silver-dim);
+    letter-spacing: .05em;
+    white-space: nowrap;
+}
+
+.music-panel .song b {
+    color: var(--gold);
+    font-weight: 500;
+}
+
+.music-panel input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 96px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--gold), rgba(255, 211, 127, .2));
+    outline: none;
+    cursor: pointer;
+}
+
+.music-panel input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 8px rgba(255, 211, 127, .8);
+    cursor: pointer;
+}
+
+.music-panel input[type=range]::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border: none;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 8px rgba(255, 211, 127, .8);
+    cursor: pointer;
+}
+
+.music-panel .vol-label {
+    font-family: Orbitron, sans-serif;
+    font-size: 10px;
+    letter-spacing: .14em;
+    color: var(--silver-dim);
+}
+
+/* 圆形播放键 */
+.music-btn {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 211, 127, .5);
+    background: rgba(30, 22, 8, .55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--gold);
+    font-size: 19px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .3s, box-shadow .3s, border-color .3s;
+}
+
+.music-btn:hover {
+    transform: scale(1.08);
+    border-color: var(--gold);
+    box-shadow: var(--glow-gold);
+}
+
+/* 播放中：金色呼吸光环 */
+.music-fab.playing .music-btn {
+    animation: musicPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes musicPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 211, 127, .35);
+    }
+
+    50% {
+        box-shadow: 0 0 0 12px rgba(255, 211, 127, 0);
+    }
+}
+
+/* 均衡器：播放时跳动 */
+.music-eq {
+    display: flex;
+    align-items: flex-end;
+    gap: 2.5px;
+    height: 16px;
+}
+
+.music-eq i {
+    width: 3px;
+    height: 5px;
+    border-radius: 2px;
+    background: var(--gold);
+    box-shadow: 0 0 6px rgba(255, 211, 127, .6);
+}
+
+.music-fab.playing .music-eq i {
+    animation: eqBar 0.9s ease-in-out infinite;
+}
+
+.music-fab.playing .music-eq i:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.music-fab.playing .music-eq i:nth-child(2) {
+    animation-delay: .18s;
+}
+
+.music-fab.playing .music-eq i:nth-child(3) {
+    animation-delay: .34s;
+}
+
+.music-fab.playing .music-eq i:nth-child(4) {
+    animation-delay: .5s;
+}
+
+@keyframes eqBar {
+
+    0%,
+    100% {
+        height: 5px;
+    }
+
+    50% {
+        height: 16px;
+    }
+}
+
+/* 待解锁（浏览器拦截自动播放）：提示光环 */
+.music-fab.locked .music-btn {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    animation: unlockHint 1.6s ease-in-out infinite;
+}
+
+@keyframes unlockHint {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(111, 227, 255, .4);
+    }
+
+    50% {
+        box-shadow: 0 0 0 14px rgba(111, 227, 255, 0);
+    }
+}
+
+.music-hint {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 7px 13px;
+    border-radius: 999px;
+    border: 1px solid rgba(111, 227, 255, .4);
+    background: rgba(5, 13, 36, .85);
+    color: var(--cyan-soft);
+    font-size: 11.5px;
+    letter-spacing: .08em;
+    white-space: nowrap;
+    pointer-events: none;
+    animation: fadeUp .5s ease both;
+}
+
+.music-hint::after {
+    content: "";
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    background: rgba(5, 13, 36, .85);
+    border-right: 1px solid rgba(111, 227, 255, .4);
+    border-top: 1px solid rgba(111, 227, 255, .4);
+    transform: translateY(-50%) rotate(45deg);
+}
+
+/* 文件缺失告警态 */
+.music-fab.music-err .music-btn {
+    border-color: #ff8a6b;
+    color: #ff8a6b;
+    animation: none;
+}
+
+@media (max-width: 720px) {
+    .music-fab {
+        right: 12px;
+        bottom: 18px;
+    }
+
+    .music-fab.on-sky {
+        bottom: 148px;
+    }
+
+    .music-btn {
+        width: 46px;
+        height: 46px;
+    }
+
+    .music-hint {
+        display: none;
+    }
 }
 
 /* 尊重系统减弱动效设置 */
 @media (prefers-reduced-motion: reduce) {
-    .nav, .fade-up { animation-duration: .01s; animation-delay: 0s; }
-    .nav-logo .star, .signal-dot { animation: none; }
-    * { transition-duration: .01s !important; }
+
+    .nav,
+    .fade-up {
+        animation-duration: .01s;
+        animation-delay: 0s;
+    }
+
+    .nav-logo .star,
+    .signal-dot {
+        animation: none;
+    }
+
+    .music-fab.playing .music-btn,
+    .music-fab.locked .music-btn,
+    .music-fab.playing .music-eq i {
+        animation: none;
+    }
+
+    * {
+        transition-duration: .01s !important;
+    }
 }

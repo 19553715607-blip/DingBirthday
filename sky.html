@@ -845,9 +845,9 @@
             state.thrust = v;
             document.getElementById('holdHint').classList.toggle('gone', v || state.alt > 2);
         }
-        addEventListener('mousedown', e => { if (!e.target.closest('button, a, .nav, .quick-nav')) setThrust(true); });
+        addEventListener('mousedown', e => { if (!e.target.closest('button, a, .nav, .quick-nav, .music-fab')) setThrust(true); });
         addEventListener('mouseup', () => setThrust(false));
-        addEventListener('touchstart', e => { if (!e.target.closest('button, a, .nav, .quick-nav')) { e.preventDefault(); setThrust(true); } }, { passive: false });
+        addEventListener('touchstart', e => { if (!e.target.closest('button, a, .nav, .quick-nav, .music-fab')) { e.preventDefault(); setThrust(true); } }, { passive: false });
         addEventListener('touchend', () => setThrust(false));
         addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); setThrust(true); } });
         addEventListener('keyup', e => { if (e.code === 'Space') setThrust(false); });
@@ -900,6 +900,8 @@
 
         requestAnimationFrame(frame);
     </script>
+    <!-- 共享背景音乐：林俊杰《当你》单曲循环（文件请放 assets/music/dangni.mp3） -->
+    <script src="assets/music.js?v=2" defer></script>
 </body>
 
 </html>

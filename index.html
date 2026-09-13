@@ -274,6 +274,64 @@
             transform: translateY(0) scale(.97);
         }
 
+        /* 控制台内的音乐控制按钮：播放态金色高亮 */
+        .music-btn-console {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            border-color: rgba(255, 211, 127, .45);
+            color: var(--gold);
+            text-shadow: 0 0 8px rgba(255, 211, 127, .35);
+        }
+
+        .music-btn-console .m-state {
+            font-size: 10.5px;
+            letter-spacing: .08em;
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 211, 127, .35);
+            color: var(--gold);
+            line-height: 1.4;
+        }
+
+        .music-btn-console.playing {
+            background: rgba(60, 40, 12, .35);
+            border-color: var(--gold);
+            box-shadow: 0 0 16px rgba(255, 211, 127, .35);
+        }
+
+        .music-btn-console.playing .m-state {
+            background: rgba(255, 211, 127, .14);
+            animation: statePulse 2s ease-in-out infinite;
+        }
+
+        .music-btn-console.paused .m-state {
+            border-color: rgba(157, 180, 216, .4);
+            color: var(--silver-dim);
+        }
+
+        .music-btn-console.error {
+            border-color: #ff8a6b;
+            color: #ff8a6b;
+        }
+
+        .music-btn-console.error .m-state {
+            border-color: #ff8a6b;
+            color: #ff8a6b;
+        }
+
+        @keyframes statePulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 rgba(255, 211, 127, 0);
+            }
+
+            50% {
+                box-shadow: 0 0 8px rgba(255, 211, 127, .4);
+            }
+        }
+
         /* ============ 更多祝福界面入口（sky / wish 跳转） ============ */
         .more-entries {
             position: fixed;
@@ -599,14 +657,66 @@
                 display: none;
             }
 
-            .console {
-                gap: 8px;
-                padding: 10px 12px;
-                bottom: 16px;
+            /* 顶部 HUD 下移到导航栏下方，避免重叠 */
+            .hud-tl {
+                top: 56px;
+                left: 14px;
             }
 
+            .hud-tr {
+                top: 56px;
+                right: 14px;
+            }
+
+            .hud-title {
+                font-size: 11px;
+                letter-spacing: .18em;
+            }
+
+            /* 控制台：占满可用宽度，单行排列，避免与入口按钮重叠 */
+            .console {
+                gap: 6px;
+                padding: 8px 10px;
+                bottom: 12px;
+                flex-wrap: nowrap;
+                width: calc(100vw - 16px);
+                max-width: calc(100vw - 16px);
+                justify-content: center;
+            }
+
+            .btn {
+                font-size: 10px;
+                padding: 7px 9px;
+                letter-spacing: .06em;
+                flex: 0 0 auto;
+            }
+
+            /* 音乐按钮：隐藏状态文字，只留图标，保持紧凑 */
+            .music-btn-console .m-state {
+                display: none;
+            }
+
+            .music-btn-console {
+                gap: 4px;
+            }
+
+            .speed-box {
+                gap: 6px;
+                padding: 0 4px;
+            }
+
+            .speed-box label {
+                font-size: 10px;
+                letter-spacing: .12em;
+            }
+
+            input[type=range] {
+                width: 58px;
+            }
+
+            /* 入口按钮：移到控制台正上方，留足间距避免重叠 */
             .more-entries {
-                bottom: 96px;
+                bottom: 78px;
                 gap: 8px;
                 flex-wrap: wrap;
                 justify-content: center;
@@ -614,29 +724,79 @@
             }
 
             .entry-btn {
-                font-size: 11px;
-                padding: 8px 12px;
+                font-size: 10.5px;
+                padding: 7px 11px;
                 letter-spacing: .06em;
             }
 
             .entry-btn span {
-                font-size: 9.5px;
+                font-size: 9px;
             }
 
-            .btn {
-                font-size: 11px;
-                padding: 9px 12px;
-                letter-spacing: .08em;
+            /* 右下角音乐播放器：上移到控制台上方，避免与控制台重叠 */
+            .music-fab {
+                right: 10px;
+                bottom: 68px;
             }
 
-            input[type=range] {
-                width: 74px;
+            .music-btn {
+                width: 42px;
+                height: 42px;
+                font-size: 15px;
+            }
+
+            .music-hint {
+                display: none;
             }
 
             .holo-body {
                 font-size: 14px;
                 line-height: 1.9;
                 min-height: 150px;
+            }
+
+            .corner {
+                width: 14px;
+                height: 14px;
+            }
+        }
+
+        /* 超窄屏（< 380px）：进一步收紧 */
+        @media (max-width:380px) {
+            .hud-tl {
+                top: 52px;
+            }
+
+            .hud-tr {
+                top: 52px;
+            }
+
+            .console {
+                gap: 5px;
+                padding: 7px 8px;
+            }
+
+            .btn {
+                font-size: 9.5px;
+                padding: 6px 7px;
+            }
+
+            input[type=range] {
+                width: 48px;
+            }
+
+            .more-entries {
+                bottom: 72px;
+                gap: 6px;
+            }
+
+            .entry-btn {
+                font-size: 10px;
+                padding: 6px 9px;
+            }
+
+            .music-fab {
+                bottom: 64px;
             }
         }
     </style>
@@ -684,6 +844,8 @@
         <button class="btn" id="btnConstellation">✦ 点亮星座</button>
         <button class="btn" id="btnWarp">⟡ 曲速探索</button>
         <button class="btn" id="btnBroadcast">▸ 星际广播</button>
+        <button class="btn music-btn-console" id="btnMusic" title="背景音乐：林俊杰《当你》">♪ 音乐<span
+                class="m-state">播放中</span></button>
         <div class="speed-box">
             <label>星盘转速</label>
             <input type="range" id="speedRange" min="0" max="100" value="35" />
@@ -1942,6 +2104,36 @@
             document.getElementById('speedRange').addEventListener('input', e => {
                 autoSpeed = (e.target.value / 100) * 0.0035 * 60;
             });
+
+            /* ---- 控制台音乐按钮：与右下角共享播放器双向同步 ---- */
+            const btnMusic = document.getElementById('btnMusic');
+            const mState = btnMusic.querySelector('.m-state');
+            // 更新按钮显示状态
+            function refreshMusicBtn(state) {
+                btnMusic.classList.remove('playing', 'paused', 'error');
+                if (state.hasError) {
+                    btnMusic.classList.add('error');
+                    mState.textContent = '未找到文件';
+                    btnMusic.title = '请将《当你》音频放到 assets/music/dangni.mp3';
+                } else if (state.playing) {
+                    btnMusic.classList.add('playing');
+                    mState.textContent = '播放中';
+                    btnMusic.title = '背景音乐：林俊杰《当你》（点击暂停）';
+                } else {
+                    btnMusic.classList.add('paused');
+                    mState.textContent = '已暂停';
+                    btnMusic.title = '背景音乐：林俊杰《当你》（点击播放）';
+                }
+            }
+            // 点击切换：派发事件给共享 music.js 处理
+            btnMusic.addEventListener('click', () => {
+                window.dispatchEvent(new CustomEvent('music-toggle'));
+            });
+            // 监听共享播放器的状态变化（含初始同步）
+            window.addEventListener('music-state', e => refreshMusicBtn(e.detail));
+            // music.js 可能在当前脚本之前已初始化并派发过事件，做一次兜底读取
+            const audioEl = document.querySelector('audio');
+            if (audioEl) refreshMusicBtn({ playing: !audioEl.paused, hasError: audioEl.error !== null });
         }
 
         /* ============================================================
@@ -2042,6 +2234,8 @@
 
         init();
     </script>
+    <!-- 共享背景音乐：林俊杰《当你》单曲循环（文件请放 assets/music/dangni.mp3） -->
+    <script src="assets/music.js?v=2" defer></script>
 </body>
 
 </html>
