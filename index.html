@@ -933,7 +933,7 @@
         const pointer = new THREE.Vector2(0, 0);
         const raycaster = new THREE.Raycaster();
 
-        let autoSpeed = 0.00035 * 60;        // 星盘自动转速（由滑块控制）
+        let autoSpeed = (35 / 100) * 0.21;   // 星盘自动转速（rad/s），与滑块默认值 35 对应
         let dragState = { down: false, x: 0, y: 0, moved: 0 };
         let warp = { active: false, t: 0, dur: 2.8, env: 0 };
         let nameAssembled = false;
@@ -2102,7 +2102,7 @@
             });
             // 星盘转速滑块
             document.getElementById('speedRange').addEventListener('input', e => {
-                autoSpeed = (e.target.value / 100) * 0.0035 * 60;
+                autoSpeed = (e.target.value / 100) * 0.21;   // 0~0.21 rad/s
             });
 
             /* ---- 控制台音乐按钮：与右下角共享播放器双向同步 ---- */
@@ -2148,7 +2148,7 @@
 
             // 星盘自动旋转（曲速时加速）
             const spinBoost = 1 + warp.env * 3.5;
-            worldGroup.rotation.y += autoSpeed * dt / 60 * spinBoost;
+            worldGroup.rotation.y += autoSpeed * dt * spinBoost;
 
             // 中央恒星系统：等离子表面时间推进 + 球体自转
             starSphere.material.uniforms.uTime.value = t;
@@ -2235,7 +2235,7 @@
         init();
     </script>
     <!-- 共享背景音乐：林俊杰《当你》单曲循环（文件请放 assets/music/dangni.mp3） -->
-    <script src="assets/music.js?v=2" defer></script>
+    <script src="assets/music.js?v=4" defer></script>
 </body>
 
 </html>
