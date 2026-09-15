@@ -15,8 +15,9 @@
     'use strict';
 
     var SONG_SRC = 'assets/music/dangni.mp3?v=1025';
-    var K_VOL = 'dr1025_music_vol';      // 音量记忆
-    var K_PAUSED = 'dr1025_music_paused'; // 用户是否手动暂停
+    var K_VOL = 'dr1025_music_vol';      // 音量记忆（localStorage，跨会话保留）
+    var K_PAUSED = 'dr1025_music_paused'; // 用户是否手动暂停（localStorage）
+    var S_TIME = 'dr1025_music_time';     // 跨页续播进度（sessionStorage，关标签页即清空）
 
     // 默认音量 10%（0.1）；若 localStorage 存的是 0 或非法值，回退到默认
     var storedVol = parseFloat(localStorage.getItem(K_VOL));
@@ -47,9 +48,8 @@
 
     /* ---------- 音频元素 ---------- */
     var audio = new Audio();
-    // 每次页面加载附加随机参数，强制浏览器从头加载，避免从缓存进度续播
-    audio.src = SONG_SRC + '&_=' + Date.now();
-    audio.loop = true;                 // 单曲循环
+    audio.src = SONG_SRC;                 // 不加随机参数，利用浏览器缓存加快加载
+    audio.loop = true;                    // 单曲循环
     audio.preload = 'auto';
     audio.volume = targetVol;
     audio.style.display = 'none';
@@ -161,17 +161,37 @@
     // 阻止滑块点击冒泡到飞行/星盘交互
     volRange.addEventListener('pointerdown', function (e) { e.stopPropagation(); });
 
-    /* ---------- 每次打开网页均从头播放：清除上次进度记忆 ---------- */
-    // 需求：每次页面加载/刷新时音乐从 0 秒开始，不续播上次位置
-    localStorage.removeItem('dr1025_music_time');
-    // 首次播放时强制归零（playing 事件在媒体真正开始播放后触发，此时 seek 最可靠）
-    var resetOnce = false;
-    audio.addEventListener('playing', function () {
-        if (!resetOnce) {
-            resetOnce = true;
-            audio.currentTime = 0;
+    /* ---------- 跨页续播：sessionStorage 保存/恢复播放位置 ----------
+     * - 首次访问站点（无 sessionStorage 记录）→ 从 0 开始自动播放
+     * - 页面间切换（index ↔ sky ↔ wish）→ 从上次播放位置接续
+     * - 关闭标签页后 sessionStorage 清空 → 下次打开从 0 开始
+     */
+    var savedTime = parseFloat(sessionStorage.getItem(S_TIME));
+
+    // 元数据加载完成后，若有保存的进度则定位到该位置
+    function tryRestorePosition() {
+        if (!audio.duration) return;
+        if (isFinite(savedTime) && savedTime > 0.5 && savedTime < audio.duration - 1.5) {
+            try { audio.currentTime = savedTime; } catch (e) { /* 解码未就绪忽略 */ }
         }
+    }
+    audio.addEventListener('loadedmetadata', tryRestorePosition);
+    if (audio.readyState >= 1) tryRestorePosition();
+
+    // 定时保存播放位置（1 秒一次）
+    setInterval(function () {
+        if (audio.duration) sessionStorage.setItem(S_TIME, String(audio.currentTime));
+    }, 1000);
+
+    // 页面隐藏/关闭前立即保存（确保跨页切换时进度不丢失）
+    function savePosition() {
+        if (audio.duration) sessionStorage.setItem(S_TIME, String(audio.currentTime));
+    }
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) savePosition();
     });
+    window.addEventListener('pagehide', savePosition);
+    window.addEventListener('beforeunload', savePosition);
 
     /* ---------- 文件缺失 / 加载失败告警 ---------- */
     audio.addEventListener('error', function () {
@@ -194,11 +214,10 @@
     function init() {
         // 用户上次手动暂停 → 不自动播放，显示 ▶
         if (localStorage.getItem(K_PAUSED) === '1') { syncUI(); return; }
-        // src 已带随机参数，每次加载从头开始
+        // 直接播放：若有保存进度，loadedmetadata 已定位到该位置（跨页续播）；否则从 0 开始
         var p = audio.play();
         if (p && p.then) {
             p.then(function () {
-                audio.currentTime = 0;  // 播放成功后再次归零
                 isPlaying = true;
                 syncUI();
             }).catch(function (err) {
