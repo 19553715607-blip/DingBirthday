@@ -1790,91 +1790,6 @@
             const lines = new THREE.LineSegments(lGeo, lMat);
             fxGroup.add(lines);
 
-            /* ===== 蝎子形状轮廓（仅在星座点亮后渐显） ===== */
-            // 精细结构：双钳（含可动指/不动指）、头胸部、分节腹部、4 对步足、弯曲分节尾 + 毒刺
-            // 金色琥珀线，叠在星座连线之上（Z 略靠前），半透明保证连线仍清晰
-            const SOZ = -1.15;
-            const sSegs = [];   // 每段为 [x1,y1,z1, x2,y2,z2]
-            // 辅助：把一串点连成折线（每个顶点带 Z=SOZ）
-            function poly(pts) {
-                for (let i = 0; i < pts.length - 1; i++) {
-                    sSegs.push(pts[i][0], pts[i][1], SOZ, pts[i + 1][0], pts[i + 1][1], SOZ);
-                }
-            }
-
-            /* —— 左钳：由基节→外弧（不动指）→ 指尖回弯 → 可动指 构成 —— */
-            poly([
-                [-2.2, 4.0], [-3.0, 4.8], [-4.0, 5.3], [-5.0, 5.9], [-5.7, 6.7],
-                [-5.4, 7.4], [-4.7, 7.5], [-4.3, 7.1],   // 不动指指尖回弯
-                [-4.1, 6.5], [-3.7, 5.8], [-3.2, 5.0], [-2.3, 4.1]
-            ]);
-            poly([[-3.2, 5.0], [-3.8, 5.9], [-4.2, 6.5], [-4.6, 7.0]]);  // 可动指
-
-            /* —— 右钳（镜像） —— */
-            poly([
-                [2.2, 4.0], [3.0, 4.8], [4.0, 5.3], [5.0, 5.9], [5.7, 6.7],
-                [5.4, 7.4], [4.7, 7.5], [4.3, 7.1],
-                [4.1, 6.5], [3.7, 5.8], [3.2, 5.0], [2.3, 4.1]
-            ]);
-            poly([[3.2, 5.0], [3.8, 5.9], [4.2, 6.5], [4.6, 7.0]]);
-
-            /* —— 头胸部 + 腹部 整体外轮廓（连续闭合折线） —— */
-            poly([
-                [-2.2, 4.0], [-1.5, 4.25], [0, 4.3], [1.5, 4.25], [2.2, 4.0],   // 头胸背板上缘
-                [2.6, 3.5], [2.5, 2.6], [2.3, 1.6], [2.0, 0.6],                // 头胸右侧
-                [2.5, 0.0], [2.85, -1.0], [2.75, -2.1], [2.2, -3.0],           // 腹右侧（中段膨出）
-                [1.4, -3.5], [0.5, -3.75], [-0.5, -3.75], [-1.4, -3.5],       // 腹末（尾节连接）
-                [-2.2, -3.0], [-2.75, -2.1], [-2.85, -1.0], [-2.5, 0.0],      // 腹左侧
-                [-2.0, 0.6], [-2.3, 1.6], [-2.5, 2.6], [-2.6, 3.5], [-2.2, 4.0] // 头胸左侧回到起点
-            ]);
-
-            /* —— 腹部分节线（体节之间的横隔） —— */
-            poly([[-2.55, 2.55], [2.55, 2.55]]);
-            poly([[-2.75, 1.4], [2.75, 1.4]]);
-            poly([[-2.85, 0.2], [2.85, 0.2]]);
-            poly([[-2.8, -1.0], [2.8, -1.0]]);
-            poly([[-2.55, -2.1], [2.55, -2.1]]);
-
-            /* —— 4 对步足（每足 3 节，向外下方展开） —— */
-            // 左侧
-            poly([[-2.45, 3.1], [-3.9, 2.6], [-5.1, 3.3], [-5.7, 4.2]]);
-            poly([[-2.6, 2.0], [-4.3, 1.3], [-5.6, 1.6], [-6.4, 2.4]]);
-            poly([[-2.7, 0.9], [-4.4, -0.1], [-6.0, -0.3], [-7.0, 0.7]]);
-            poly([[-2.8, -0.1], [-4.5, -1.4], [-6.2, -2.0], [-7.4, -1.1]]);
-            // 右侧（镜像）
-            poly([[2.45, 3.1], [3.9, 2.6], [5.1, 3.3], [5.7, 4.2]]);
-            poly([[2.6, 2.0], [4.3, 1.3], [5.6, 1.6], [6.4, 2.4]]);
-            poly([[2.7, 0.9], [4.4, -0.1], [6.0, -0.3], [7.0, 0.7]]);
-            poly([[2.8, -0.1], [4.5, -1.4], [6.2, -2.0], [7.4, -1.1]]);
-
-            /* —— 尾：从腹末向左下方弯曲，分 6 节，末端毒刺上翘 —— */
-            poly([
-                [0, -3.75], [0.1, -4.6], [0.4, -5.5], [1.0, -6.3],
-                [1.9, -6.9], [2.9, -7.25], [4.0, -7.15],
-                [4.9, -6.75], [5.5, -6.0], [5.8, -5.1]
-            ]);
-            // 毒刺（由 telson 伸出的双尖）
-            poly([[5.8, -5.1], [6.3, -4.3], [6.1, -3.6]]);
-            poly([[5.8, -5.1], [5.6, -4.2], [5.9, -3.5]]);
-            // 尾部分节标记（垂直于尾轴的短刻痕）
-            poly([[0.35, -4.55], [-0.15, -4.7]]);
-            poly([[0.75, -5.45], [0.2, -5.7]]);
-            poly([[1.35, -6.2], [0.75, -6.5]]);
-            poly([[2.25, -6.85], [1.65, -7.15]]);
-            poly([[3.25, -7.2], [2.7, -7.35]]);
-            poly([[4.25, -7.0], [3.8, -7.2]]);
-            poly([[5.0, -6.5], [4.7, -6.8]]);
-
-            // 构建 LineSegments 几何
-            const scorpGeo = new THREE.BufferGeometry();
-            scorpGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(sSegs), 3));
-            const scorpMat = new THREE.LineBasicMaterial({
-                color: 0xffb347, transparent: true, opacity: 0,
-                blending: THREE.AdditiveBlending, depthWrite: false
-            });
-            const scorpionOutline = new THREE.LineSegments(scorpGeo, scorpMat);
-            fxGroup.add(scorpionOutline);
-
             const label = makeScorpiusLabel();
             fxGroup.add(label);
 
@@ -1886,7 +1801,7 @@
                 targetFlat[i * 3 + 2] = targets[i][2];
             }
             constellation = {
-                stars, lines, scorpionOutline, label, uni, posAttr,
+                stars, lines, label, uni, posAttr,
                 starts: starStarts, targets: targetFlat,
                 conv: 0, convDone: false,
                 lit: false, progress: 0,
@@ -1909,7 +1824,6 @@
             constellation.uni.uBoost.value = 0;
             constellation.lines.material.opacity = 0;
             constellation.lines.geometry.setDrawRange(0, 0);
-            constellation.scorpionOutline.material.opacity = 0;
             constellation.label.material.opacity = 0;
             // 把 position 重置为汇聚起点
             const arr = constellation.posAttr.array;
@@ -1958,11 +1872,6 @@
             constellation.uni.uOpacity.value = 0.3 + 0.3 * p;
             constellation.uni.uBoost.value = 0.5 * p;
             constellation.label.material.opacity = 0.9 * p;
-            // 阶段四：连线接近完成时，金色蝎子轮廓渐显（在连线之后出现，不干扰连线辨识）
-            // progress > 0.85 开始显现，1.0 时达到目标透明度 0.55
-            const oStart = 0.85;
-            const oP = Math.max(0, (p - oStart) / (1 - oStart));
-            constellation.scorpionOutline.material.opacity = 0.55 * oP;
         }
 
         /* ============================================================
